@@ -88,7 +88,7 @@ class Admin extends Admin_Controller
 		$this->load->library(array('keywords/keywords', 'form_validation'));
 
 		$_categories = array();
-		if ($categories = $this->blog_categories_m->order_by('title')->get_all())
+		if ($categories = $this->blog_categories_m->where('site_id', SITE_ID)->order_by('title')->get_all()) #madFrontHack
 		{
 			foreach ($categories as $category)
 			{
@@ -210,7 +210,8 @@ class Admin extends Admin_Controller
 				'author_id'        => $this->current_user->id,
 				'type'             => $this->input->post('type'),
 				'parsed'           => ($this->input->post('type') == 'markdown') ? parse_markdown($this->input->post('body')) : '',
-				'preview_hash'     => $hash
+				'preview_hash'     => $hash,
+				'site_id'		   => SITE_ID // by #madFrontHack
 			);
 
 			if ($id = $this->streams->entries->insert_entry($_POST, 'blog', 'blogs', array('created'), $extra))

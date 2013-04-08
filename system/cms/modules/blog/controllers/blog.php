@@ -48,7 +48,7 @@ class Blog extends Public_Controller
 			'stream'		=> 'blog',
 			'namespace'		=> 'blogs',
 			'limit'			=> Settings::get('records_per_page'),
-			'where'			=> "`status` = 'live'",
+			'where'			=> "`status` = 'live' and site_id = ".SITE_ID,
 			'paginate'		=> 'yes',
 			'pag_base'		=> 'blog/page',
 			'pag_segment'   => 3
@@ -95,7 +95,7 @@ class Blog extends Public_Controller
 			'stream'		=> 'blog',
 			'namespace'		=> 'blogs',
 			'limit'			=> Settings::get('records_per_page'),
-			'where'			=> "`status` = 'live' AND `category_id` = '{$category->id}'",
+			'where'			=> "`status` = 'live' AND `category_id` = '{$category->id}' AND site_id = ".SITE_ID,
 			'paginate'		=> 'yes',
 			'pag_segment'	=> 4
 		);
@@ -138,7 +138,7 @@ class Blog extends Public_Controller
 			'stream'		=> 'blog',
 			'namespace'		=> 'blogs',
 			'limit'			=> Settings::get('records_per_page'),
-			'where'			=> "`status` = 'live'",
+			'where'			=> "`status` = 'live' and site_id = ".SITE_ID,
 			'year'			=> $year,
 			'month'			=> $month,
 			'paginate'		=> 'yes',
@@ -185,7 +185,7 @@ class Blog extends Public_Controller
 			'stream'		=> 'blog',
 			'namespace'		=> 'blogs',
 			'limit'			=> 1,
-			'where'			=> "`slug` = '{$slug}'"
+			'where'			=> "`slug` = '{$slug}' and site_id = ".SITE_ID
 		);
 		$data = $this->streams->entries->get_entries($params);
 		$post = (isset($data['entries'][0])) ? $data['entries'][0] : null;
@@ -214,7 +214,7 @@ class Blog extends Public_Controller
 			'stream'		=> 'blog',
 			'namespace'		=> 'blogs',
 			'limit'			=> 1,
-			'where'			=> "`preview_hash` = '{$hash}'"
+			'where'			=> "`preview_hash` = '{$hash}' and site_id = ".SITE_ID
 		);
 		$data = $this->streams->entries->get_entries($params);
 		$post = (isset($data['entries'][0])) ? $data['entries'][0] : null;
@@ -265,7 +265,8 @@ class Blog extends Public_Controller
 			'namespace'		=> 'blogs',
 			'limit'			=> Settings::get('records_per_page'),
 			'paginate'		=> 'yes',
-			'pag_segment'	=> 4
+			'pag_segment'	=> 4,
+			'where'			=> "site_id = ".SITE_ID
 		);
 		$posts = $this->streams->entries->get_entries($params);
 

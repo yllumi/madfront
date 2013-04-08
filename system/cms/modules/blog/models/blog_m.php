@@ -15,6 +15,7 @@ class Blog_m extends MY_Model
 			->join('blog_categories', 'blog.category_id = blog_categories.id', 'left')
 			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
 			->join('users', 'blog.author_id = users.id', 'left')
+			->where('blog.site_id', SITE_ID) // #madFrontHack
 			->order_by('created_on', 'DESC');
 
 		return $this->db->get('blog')->result();
@@ -27,6 +28,7 @@ class Blog_m extends MY_Model
 			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
 			->join('users', 'blog.author_id = users.id', 'left')
 			->where('blog.id', $id)
+			->where('blog.site_id', SITE_ID) // #madFrontHack
 			->get('blog')
 			->row();
 	}
@@ -36,7 +38,8 @@ class Blog_m extends MY_Model
 		$this->db
 			->select('blog.*, users.username, profiles.display_name')
 			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
-			->join('users', 'blog.author_id = users.id', 'left');
+			->join('users', 'blog.author_id = users.id', 'left')
+			->where('blog.site_id', SITE_ID);  // #madFrontHack
 
 		if (is_array($key))
 		{
@@ -114,6 +117,7 @@ class Blog_m extends MY_Model
 			$this->db->limit($params['limit']);
 		}
 
+		$this->db->where('blog.site_id', SITE_ID);
 		return $this->get_all();
 	}
 
@@ -124,6 +128,7 @@ class Blog_m extends MY_Model
 			->join('keywords_applied', 'keywords_applied.hash = blog.keywords')
 			->join('keywords', 'keywords.id = keywords_applied.keyword_id')
 			->where('keywords.name', str_replace('-', ' ', $tag))
+			->where('blog.site_id', SITE_ID) // #madFrontHack
 			->where($params)
 			->count_all_results();
 	}
@@ -137,6 +142,7 @@ class Blog_m extends MY_Model
 			->join('blog_categories', 'blog_categories.id = blog.category_id', 'left')
 			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
 			->where('keywords.name', str_replace('-', ' ', $tag))
+			->where('blog.site_id', SITE_ID) // #madFrontHack
 			->where($params)
 			->get()
 			->result();
@@ -194,6 +200,7 @@ class Blog_m extends MY_Model
 			$this->db->where('status', 'live');
 		}
 
+		$this->db->where('blog.site_id', SITE_ID);  // #madFrontHack
 		return $this->db->count_all_results('blog');
 	}
 
@@ -228,6 +235,7 @@ class Blog_m extends MY_Model
 
 		$this->db->where('status', 'live');
 		$this->db->where('created_on <=', now());
+		$this->db->where('blog.site_id', SITE_ID);  // #madFrontHack
 		$this->db->having('post_count >', 0);
 		$this->db->order_by('t1.created_on DESC');
 		$query = $this->db->get();
@@ -308,6 +316,7 @@ class Blog_m extends MY_Model
 
 				$this->db->or_like('blog.body', $phrase);
 				$this->db->or_like('blog.intro', $phrase);
+				$this->db->where('blog.site_id', SITE_ID);
 				$this->db->or_like('profiles.display_name', $phrase);
 				$counter++;
 			}

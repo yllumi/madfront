@@ -86,8 +86,9 @@ class MX_Router extends CI_Router
 					) ENGINE=InnoDB DEFAULT CHARSET=utf8; ');
 			}
 
+			// I add site.id for SITE_ID constant #madFrontHack
 			$site = DB()
-				->select('site.name, site.ref, site.domain, alias.domain as alias_domain, alias.type as alias_type')
+				->select('site.id, site.name, site.ref, site.domain, alias.domain as alias_domain, alias.type as alias_type')
 				->where('site.domain', SITE_DOMAIN)
 				->or_where('alias.domain', SITE_DOMAIN)
 				->join('core_domains alias', 'alias.site_id = site.id', 'left')
@@ -131,6 +132,9 @@ class MX_Router extends CI_Router
 
 				// The site ref. Used for building site specific paths
 				define('SITE_REF', $site->ref);
+				
+				// site ID, important for get content based on site ID #madFrontHack
+				define('SITE_ID', $site->id);
 				
 				// Path to uploaded files for this site
 				define('UPLOAD_PATH', 'uploads/'.SITE_REF.'/');

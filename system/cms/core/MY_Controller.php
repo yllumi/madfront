@@ -45,7 +45,7 @@ class MY_Controller extends MX_Controller
 		// No record? Probably DNS'ed but not added to multisite
 		if ( ! defined('SITE_REF'))
 		{
-			show_error('This domain is not set up correctly. Please go to '.anchor('sites') .' and log in to add this site.');
+			show_error('Domain Anda belum terdaftar pada sistem. Silakan hubungi administrator untuk aktivasi lebih lanjut.');
 		}
 
 		// By changing the prefix we are essentially "namespacing" each site

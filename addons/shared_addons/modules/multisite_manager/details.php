@@ -15,7 +15,6 @@ class Module_Multisite_Manager extends Module {
 				),
 			'frontend' => true,
 			'backend' => true,
-			'menu' => 'content', // You can also place modules in their top level menu. For example try: 'menu' => 'Madfront Multisite Manager',
 			'sections' => array(
 				'items' => array(
 					'name' 	=> 'madfront_multisite_manager:items', // These are translated from your language file
@@ -34,46 +33,48 @@ class Module_Multisite_Manager extends Module {
 
 	public function admin_menu(&$menu)
 	{
-	   	$menu['nav_data'] += array(
+		if(!isset($menu['Madfront']))
+			$menu['Madfront'] = array();
+	   	$menu['Madfront'] += array(
 	    	'Multisite Manager' => 'admin/multisite_manager'
 		);
 	}
 
 	public function install()
 	{
-		// // delete unique ref from core_sites
-		// $this->db->query('ALTER TABLE `core_sites` DROP INDEX `Unique ref`');
+		// delete unique ref from core_sites
+		$this->db->query('ALTER TABLE `core_sites` DROP INDEX `Unique ref`');
 
-		// // add site_id dield to some table
-		// $multisite_tables = array(
-		// 		'default_blog',
-		// 		'default_blog_categories',
-		// 		'default_comments',
-		// 		'default_contact_log',
-		// 		'default_files',
-		// 		'default_file_folders',
-		// 		'default_navigation_groups',
-		// 		'default_navigation_links',
-		// 		'default_pages',
-		// 		'default_redirects',
-		// 		'default_search_index',
-		// 		'default_variables',
-		// 		'default_widget_areas',
-		// 		'default_widget_instances'
-		// 	);
-		// foreach ($multisite_tables as $table) {
-		// 	$this->db->query('ALTER TABLE  `{$table}` ADD `site_id` INT NOT NULL DEFAULT 1 AFTER `id`');
-		// }
+		// add site_id dield to some table
+		$multisite_tables = array(
+				'default_blog',
+				'default_blog_categories',
+				'default_comments',
+				'default_contact_log',
+				'default_files',
+				'default_file_folders',
+				'default_navigation_groups',
+				'default_navigation_links',
+				'default_pages',
+				'default_redirects',
+				'default_search_index',
+				'default_variables',
+				'default_widget_areas',
+				'default_widget_instances'
+			);
+		foreach ($multisite_tables as $table) {
+			$this->db->query('ALTER TABLE  `{$table}` ADD `site_id` INT NOT NULL DEFAULT 1 AFTER `id`');
+		}
 
-		// // add site_id to default_settings too
-		// $this->db->query('ALTER TABLE  `default_settings` ADD `site_id` INT NOT NULL DEFAULT 1');
+		// add site_id to default_settings too
+		$this->db->query('ALTER TABLE  `default_settings` ADD `site_id` INT NOT NULL DEFAULT 1');
 
 		return TRUE;
 	}
 
 	public function uninstall()
 	{
-		return FALSE;
+		return true;
 	}
 
 

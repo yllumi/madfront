@@ -22,8 +22,8 @@ class Plugin_madfront_multisite_manager extends Plugin
 	 */
 	function items()
 	{
-		$this->load->model('madfront_multisite_manager/madfront_multisite_manager_m');
-		return $this->madfront_multisite_manager_m->get_all();
+		$this->load->model('multisite_manager/multisite_manager_m');
+		return $this->multisite_manager_m->get_all();
 	}
 }
 

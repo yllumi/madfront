@@ -11,21 +11,23 @@
 
 			<ul class="fields">
 				<li>
-		<label for="site_name">Site Name</label>
-		<div class="input">
-		<?php echo form_input("site_name", set_value("site_name", $site_name)); ?>
-		</div>
-		</li><li>
-		<label for="domain">Domain</label>
-		<div class="input">
-		<?php echo form_input("domain", set_value("domain", $domain)); ?>
-		</div>
-		</li><li>
-		<label for="active">Active</label>
-		<div class="input">
-		<?php echo form_radio("active", set_value("active", $active)); ?>
-		</div>
-		</li>
+					<label for="site_name">Site Name</label>
+					<div class="input">
+						<?php echo form_input("site_name", set_value("site_name", $site_name)); ?>
+					</div>
+				</li>
+				<li>
+					<label for="domain">Domain</label>
+					<div class="input">
+						<?php echo form_input("domain", set_value("domain", $domain)); ?>
+					</div>
+				</li>
+				<li>
+					<label for="active">Active</label>
+					<div class="input">
+						<?php echo form_radio("active", set_value("active", $active)); ?>
+					</div>
+				</li>
 			<!-- <li>
 				<label for="fileinput">Fileinput
 					<?php if (isset($fileinput->data)): ?>

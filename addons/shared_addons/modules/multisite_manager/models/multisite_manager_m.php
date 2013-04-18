@@ -8,14 +8,15 @@
  * @subpackage 	Madfront
  * @copyright 	MIT
  */
-class madfront_multisite_manager_m extends MY_Model {
+class Multisite_manager_m extends MY_Model {
 
 	private $folder;
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this->_table = 'madfront_multisite_manager';
+		$this->db->set_dbprefix('core_');
+		$this->_table = 'sites';
 		// $this->load->model('files/file_folders_m');
 		// $this->load->library('files/files');
 		// $this->folder = $this->file_folders_m->get_by('name', 'madfront_multisite_manager');
@@ -27,13 +28,14 @@ class madfront_multisite_manager_m extends MY_Model {
 		// $fileinput = Files::upload($this->folder->id, FALSE, 'fileinput');
 		$to_insert = array(
 			// 'fileinput' => json_encode($fileinput);
-			'site_name' => $input['site_name'],
-'domain' => $input['domain'],
-'active' => $input['active'],
-
+			'name' => $input['site_name'],
+			'ref' => 'default',
+			'domain' => $input['domain'],
+			'active' => $input['active'],
+			'created_on' => time()
 		);
 
-		return $this->db->insert('madfront_multisite_manager', $to_insert);
+		return $this->db->insert($this->_table, $to_insert);
 	}
 
 	//edit a new item
@@ -41,16 +43,17 @@ class madfront_multisite_manager_m extends MY_Model {
 	{
 		// $fileinput = Files::upload($this->folder->id, FALSE, 'fileinput');
 		$to_insert = array(
-			'site_name' => $input['site_name'],
-'domain' => $input['domain'],
-'active' => $input['active'],
-
+			'name' => $input['site_name'],
+			'ref' => 'default',
+			'domain' => $input['domain'],
+			'active' => $input['active'],
+			'updated_on' => time()
 		);
 
 		// if ($fileinput['status']) {
 		// 	$to_insert['fileinput'] = json_encode($fileinput);
 		// }
 
-		return $this->db->where('id', $id)->update('madfront_multisite_manager', $to_insert);
+		return $this->db->where('id', $id)->update($this->_table, $to_insert);
 	}
 }

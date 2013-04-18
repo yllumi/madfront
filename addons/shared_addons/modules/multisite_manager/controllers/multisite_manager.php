@@ -8,7 +8,7 @@
  * @subpackage  Madfront
  * @copyright   MIT
  */
-class madfront_multisite_manager extends Public_Controller
+class multisite_manager extends Public_Controller
 {
 
     /**

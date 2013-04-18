@@ -21,4 +21,4 @@
 */
 
 // front-end
-$route['madfront_multisite_manager(/:num)?']			= 'madfront_multisite_manager/index$1';
+$route['multisite_manager(/:num)?']			= 'multisite_manager/index$1';

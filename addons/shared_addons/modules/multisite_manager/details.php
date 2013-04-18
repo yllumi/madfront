@@ -17,12 +17,12 @@ class Module_Multisite_Manager extends Module {
 			'backend' => true,
 			'sections' => array(
 				'items' => array(
-					'name' 	=> 'madfront_multisite_manager:items', // These are translated from your language file
-					'uri' 	=> 'admin/madfront_multisite_manager',
+					'name' 	=> 'multisite_manager:items', // These are translated from your language file
+					'uri' 	=> 'admin/multisite_manager',
 					'shortcuts' => array(
 						'create' => array(
-							'name' 	=> 'madfront_multisite_manager:create',
-							'uri' 	=> 'admin/madfront_multisite_manager/create',
+							'name' 	=> 'multisite_manager:create',
+							'uri' 	=> 'admin/multisite_manager/create',
 							'class' => 'add'
 							)
 						)
@@ -42,8 +42,9 @@ class Module_Multisite_Manager extends Module {
 
 	public function install()
 	{
-		// delete unique ref from core_sites
-		$this->db->query('ALTER TABLE `core_sites` DROP INDEX `Unique ref`');
+		// delete unique ref from core_sites and set default value for it
+		$this->db->query("ALTER TABLE `core_sites` DROP INDEX `Unique ref`");
+		$this->db->query("ALTER TABLE `core_sites` CHANGE `ref` `ref` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'default'");
 
 		// add site_id dield to some table
 		$multisite_tables = array(

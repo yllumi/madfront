@@ -27,10 +27,10 @@ addons/shared_addons/helpers/*
 addons/shared_addons/libraries/*
 !addons/shared_addons/libraries/index.html
 
-!addons/shared_addons/modules
-addons/shared_addons/modules/*
-!addons/shared_addons/modules/galleries
-!addons/shared_addons/modules/index.html
+#!addons/shared_addons/modules
+#addons/shared_addons/modules/*
+#!addons/shared_addons/modules/galleries
+#!addons/shared_addons/modules/index.html
 
 !addons/shared_addons/widgets
 addons/shared_addons/widgets/*

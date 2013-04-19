@@ -128,7 +128,7 @@ class MX_Router extends CI_Router
 				}
 				
 				// Set the session config to the correct table using the config name (but removing 'default_')
-				$this->config->set_item('sess_table_name', $site->ref.'_'.str_replace('default_', '', config_item('sess_table_name')));
+				$this->config->set_item('sess_table_name', 'default_'.str_replace('default_', '', config_item('sess_table_name')));
 
 				// The site ref. Used for building site specific paths
 				define('SITE_REF', $site->ref);

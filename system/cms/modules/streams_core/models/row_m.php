@@ -181,7 +181,7 @@ class Row_m extends MY_Model {
 		// sites on a multi-site managed site.
 		// -------------------------------------
 
-		if ( ! isset($site_ref)) $site_ref = SITE_REF;
+		if ( ! isset($site_ref)) $site_ref = "default";
 
 		$this->db->set_dbprefix($site_ref.'_');
 
@@ -693,7 +693,7 @@ class Row_m extends MY_Model {
 		// Reset
 		$this->get_rows_hook = array();
 		$this->reset_sql();
-		$this->db->set_dbprefix(SITE_REF.'_');
+		$this->db->set_dbprefix('default_');
 				
 		return $return;
 	}

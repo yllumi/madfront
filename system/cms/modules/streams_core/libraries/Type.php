@@ -61,7 +61,7 @@ class Type
 		// We either need a prefix or not
 		// This is for legacy and if any 3rd party
 		// field types use this constant
-		(CMS_VERSION < 1.3) ? define('PYROSTREAMS_DB_PRE', '') : define('PYROSTREAMS_DB_PRE', SITE_REF.'_');
+		(CMS_VERSION < 1.3) ? define('PYROSTREAMS_DB_PRE', '') : define('PYROSTREAMS_DB_PRE', 'default_');
 		
 		// Since this is PyroStreams core we know where
 		// PyroStreams is, but we set this for backwards

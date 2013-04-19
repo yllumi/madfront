@@ -49,7 +49,7 @@ class MY_Controller extends MX_Controller
 		}
 
 		// By changing the prefix we are essentially "namespacing" each site
-		$this->db->set_dbprefix(SITE_REF.'_');
+		$this->db->set_dbprefix('default_');
 
 		// Load the cache library now that we know the siteref
 		$this->load->library('pyrocache');

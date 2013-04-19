@@ -20,9 +20,9 @@
 	/**
 	 * Tables.
 	 **/
-	$config['tables']['groups']  = SITE_REF.'_groups';
-	$config['tables']['users']   = SITE_REF.'_users';
-	$config['tables']['meta']    = SITE_REF.'_profiles';
+	$config['tables']['groups']  = 'default_groups';
+	$config['tables']['users']   = 'default_users';
+	$config['tables']['meta']    = 'default_profiles';
 
 	/**
 	 * Site Title, example.com

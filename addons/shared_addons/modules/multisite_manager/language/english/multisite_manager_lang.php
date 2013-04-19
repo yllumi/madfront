@@ -2,10 +2,10 @@
 //messages
 $lang['multisite_manager:success']			=	'It worked';
 $lang['multisite_manager:error']			=	'It didn\'t work';
-$lang['multisite_manager:no_items']		=	'No Items';
+$lang['multisite_manager:no_items']		=	'No Sites';
 
 //page titles
-$lang['multisite_manager:create']			=	'Create Item';
+$lang['multisite_manager:create']			=	'Create Sites';
 
 //labels
 $lang['multisite_manager:name']			=	'Name';

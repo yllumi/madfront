@@ -32,19 +32,19 @@ $lang['cp:nav_settings']				= 'Pengaturan';
 $lang['cp:nav_addons']					= 'Pengaya';
 $lang['cp:nav_modules']					= 'Modul';
 $lang['cp:nav_users']					= 'Pengguna';
-$lang['cp:nav_data']					= 'Data'; #translate
-$lang['cp:nav_structure']				= 'Structure'; #translate
+$lang['cp:nav_data']					= 'Data';
+$lang['cp:nav_structure']				= 'Struktur';
 $lang['cp:nav_content']					= 'Konten';
-$lang['cp:nav_misc']					= 'Miscellaneous'; #translate
+$lang['cp:nav_misc']					= 'lain-lain';
 
-$lang['cp:search']                      = 'Search'; #translate
+$lang['cp:search']                      = 'Cari';
 
 $lang['cp:must_login']	 				= 'Anda harus masuk terlebih dahulu untuk melihat halaman ini.';
 $lang['cp:access_denied'] 				= 'Anda tidak memiliki izin untuk dapat mengakses halaman ini.';
-$lang['cp:delete_installer_message']              = 'The installer directory still exists! Please delete it from your server! Leaving it online means control of this site could be granted to somebody else.'; #translate
-$lang['cp:delete_installer']					 = 'Delete Installer'; #translate
-$lang['cp:delete_installer_successfully_message'] = 'The installer directory has been successfully deleted.'; #translate
-$lang['cp:delete_installer_manually_message']     = 'The installer directory could not be deleted. <strong>Please remove it manually!</strong>'; #translate
+$lang['cp:delete_installer_message']              = 'Direktori installer masih ada! Silakan hapus dari server Anda! Membiarkannya online memungkinkan kontrol situs ini direbut oleh orang lain.';
+$lang['cp:delete_installer']					 = 'Hapus Installer';
+$lang['cp:delete_installer_successfully_message'] = 'Directory installer berhasil dihapus.';
+$lang['cp:delete_installer_manually_message']     = 'Directory installer tidak dapat dihapus. <strong>Silakan hapus secara manual!</strong>';
 $lang['cp:upgrade_message']				= 'Anda sedang menjalankan versi %s, tetapi database Anda versi %s. Silakan <a href="%s" title="Perbaharui">klik disini</a> untuk memperbaharui database.';
 $lang['cp:google_analytics_missing']	= 'Pengaturan Google Analytics hilang. Tambahkan ke dalam %s atau hubungi administrator.';
 $lang['cp:google_analytics_no_connect']	= 'Tidak dapat terkoneksi ke Google Analytics. Silakan Cek %s.';

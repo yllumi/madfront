@@ -12,6 +12,29 @@ class Admin extends Admin_Controller
 {
 	protected $section = 'items';
 
+	protected $item_validation_rules = array(
+		array(
+				'field' => 'name',
+				'label' => 'Site Name',
+				'rules' => 'required|trim|xss_clean',
+			),
+		array(
+				'field' => 'ref',
+				'label' => 'Reference',
+				'rules' => 'required|trim|xss_clean',
+			),
+		array(
+				'field' => 'domain',
+				'label' => 'Domain',
+				'rules' => 'required|trim|xss_clean',
+			),
+		array(
+				'field' => 'active',
+				'label' => 'Active',
+				'rules' => 'integer',
+			),
+	);
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -21,32 +44,8 @@ class Admin extends Admin_Controller
 		$this->load->library('form_validation');
 		$this->lang->load('multisite_manager');
 
-		// $this->load->library('files/files');
-		// $this->load->model('files/file_folders_m');
-
-		// Set the validation rules
-		$this->item_validation_rules = array(
-			array(
-					'field' => 'name',
-					'label' => 'Site Name',
-					'rules' => 'required|trim|is_unique|xss_clean',
-				),
-			array(
-					'field' => 'domain',
-					'label' => 'Domain',
-					'rules' => 'required|trim|is_unique|xss_clean',
-				),
-			array(
-					'field' => 'active',
-					'label' => 'Active',
-					'rules' => 'integer',
-				),
-
-		);
-
-		// We'll set the partials and metadata here since they're used everywhere
 		$this->template->append_js('module::admin.js')
-						->append_css('module::admin.css');
+					->append_css('module::admin.css');
 	}
 
 	/**
@@ -54,7 +53,7 @@ class Admin extends Admin_Controller
 	 */
 	public function index()
 	{
-		$sites = $this->multisite_manager_m->order_by('created_on')->get_all();
+		$sites = $this->multisite_manager_m->get_sites();
 
 		$this->template
 			->title($this->module_details['name'])
@@ -64,10 +63,8 @@ class Admin extends Admin_Controller
 
 	public function create()
 	{
-		$multisite_manager = new StdClass();
-		// $folder = $this->file_folders_m->get_by('name', 'multisite_manager');
-		// $this->data->files = Files::folder_contents($folder->id);
-		// Set the validation rules from the array above
+		$sites = new StdClass();
+
 		$this->form_validation->set_rules($this->item_validation_rules);
 
 		// check if the form validation passed
@@ -77,34 +74,33 @@ class Admin extends Admin_Controller
 			if($this->multisite_manager_m->create($this->input->post()))
 			{
 				// All good...
-				$this->session->set_flashdata('success', lang('multisite_manager.success'));
+				$this->session->set_flashdata('success', lang('multisite_manager:success'));
 				redirect('admin/multisite_manager');
 			}
 			// Something went wrong. Show them an error
 			else
 			{
-				$this->session->set_flashdata('error', lang('multisite_manager.error'));
+				$this->session->set_flashdata('error', lang('multisite_manager:error'));
 				redirect('admin/multisite_manager/create');
 			}
 		}
-		$multisite_manager->data = new StdClass();
+
+		$sites->data = new StdClass();
 		foreach ($this->item_validation_rules AS $rule)
 		{
-			$multisite_manager->data->{$rule['field']} = $this->input->post($rule['field']);
+			$sites->data->{$rule['field']} = $this->input->post($rule['field']);
 		}
 		$this->_form_data();
 		// Build the view using sample/views/admin/form.php
-		$this->template->title($this->module_details['name'], lang('multisite_manager.new_item'))
-						->build('admin/form', $multisite_manager->data);
+		$this->template->title($this->module_details['name'], lang('multisite_manager:new_item'))
+						->build('admin/form', $sites->data);
 	}
 
 	public function edit($id = 0)
 	{
-		$this->data = $this->multisite_manager_m->get($id);
+		$data = $this->multisite_manager_m->get($id);
 
-		// $this->load->model('files/file_folders_m');
-		// $folder = $this->file_folders_m->get_by('name', 'multisite_manager');
-		// $this->data->files = Files::folder_contents($folder->id);
+		if(!$data) redirect('admin/'.$this->module_details['slug']);
 
 		// Set the validation rules from the array above
 		$this->form_validation->set_rules($this->item_validation_rules);
@@ -120,28 +116,20 @@ class Admin extends Admin_Controller
 			if($this->multisite_manager_m->edit($id, $this->input->post()))
 			{
 				// All good...
-				$this->session->set_flashdata('success', lang('multisite_manager.success'));
+				$this->session->set_flashdata('success', lang('multisite_manager:success'));
 				redirect('admin/multisite_manager');
 			}
 			// Something went wrong. Show them an error
 			else
 			{
-				$this->session->set_flashdata('error', lang('multisite_manager.error'));
+				$this->session->set_flashdata('error', lang('multisite_manager:error'));
 				redirect('admin/multisite_manager/create');
 			}
 		}
-		// starting point for file uploads
-		// $this->data->fileinput = json_decode($this->data->fileinput);
-		$this->_form_data();
-		// Build the view using sample/views/admin/form.php
-		$this->template->title($this->module_details['name'], lang('multisite_manager.edit'))
-						->build('admin/form', $this->data);
-	}
 
-	public function _form_data()
-	{
-		// $this->load->model('pages/page_m');
-		// $this->template->pages = array_for_select($this->page_m->get_page_tree(), 'id', 'title');
+		// Build the view using sample/views/admin/form.php
+		$this->template->title($this->module_details['name'], lang('multisite_manager:edit'))
+						->build('admin/form', $data);
 	}
 
 	public function delete($id = 0)

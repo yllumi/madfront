@@ -1,6 +1,6 @@
 <section class="title">
-	<!-- We'll use $this->method to switch between madfront_multisite_manager.create & madfront_multisite_manager.edit -->
-	<h4><?php echo lang('madfront_multisite_manager:'.$this->method); ?></h4>
+	<!-- We'll use $this->method to switch between multisite_manager.create & multisite_manager.edit -->
+	<h4><?php echo lang('multisite_manager:'.$this->method); ?></h4>
 </section>
 
 <section class="item">
@@ -11,9 +11,15 @@
 
 			<ul class="fields">
 				<li>
-					<label for="site_name">Site Name</label>
+					<label for="name">Site Name</label>
 					<div class="input">
-						<?php echo form_input("site_name", set_value("site_name", $site_name)); ?>
+						<?php echo form_input("name", set_value("name", $name)); ?>
+					</div>
+				</li>
+				<li>
+					<label for="ref">Reference</label>
+					<div class="input">
+						<?php echo form_input("ref", set_value("ref", $ref)); ?>
 					</div>
 				</li>
 				<li>
@@ -25,8 +31,10 @@
 				<li>
 					<label for="active">Active</label>
 					<div class="input">
-						<?php echo form_radio("active", set_value("active", $active)); ?>
-					</div>
+					<select name="active">
+						<option value="1" <?php echo set_select('active', '1', TRUE); ?> >Active</option>
+						<option value="0" <?php echo set_select('active', '0'); ?> >Non-Active</option>
+					</select>
 				</li>
 			<!-- <li>
 				<label for="fileinput">Fileinput

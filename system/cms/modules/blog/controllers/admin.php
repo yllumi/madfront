@@ -278,7 +278,9 @@ class Admin extends Admin_Controller
 	{
 		$id or redirect('admin/blog');
 
-		$post = $this->blog_m->get($id);
+		$post = $this->blog_m->where('site_id', SITE_ID)->get_by('blog.id', $id);
+
+		if(!$post) show_404();
 
 		// If we have keywords before the update, we'll want to remove them from keywords_applied
 		$old_keywords_hash = (trim($post->keywords) != '') ? $post->keywords : null;

@@ -69,29 +69,41 @@ class Module_Addons extends Module
 			'backend' => true,
 			'menu' => false,
 
-			'sections' => array(
-				'modules' => array(
-					'name' => 'addons:modules',
-					'uri' => 'admin/addons/modules',
-				),
-				'themes' => array(
-					'name' => 'global:themes',
-					'uri' => 'admin/addons/themes',
-				),
-				'plugins' => array(
-					'name' => 'global:plugins',
-					'uri' => 'admin/addons/plugins',
-				),
-				'widgets' => array(
-					'name' => 'global:widgets',
-					'uri' => 'admin/addons/widgets',
-				),
-				'field_types' => array(
-					'name' => 'global:field_types',
-					'uri' => 'admin/addons/field-types',
-				),
+			'roles' => array(
+				'modules', 'themes', 'plugins', 'widgets', 'field_types'
 			),
 		);
+
+		if(group_has_role('blog', 'modules')){
+			$info['sections']['modules'] = array(
+				'name' => 'addons:modules',
+				'uri' => 'admin/addons/modules',
+			);
+		}
+		if(group_has_role('blog', 'themes')){
+			$info['sections']['themes'] = array(
+				'name' => 'global:themes',
+				'uri' => 'admin/addons/themes',
+			);
+		}
+		if(group_has_role('blog', 'plugins')){
+			$info['sections']['plugins'] = array(
+				'name' => 'global:plugins',
+				'uri' => 'admin/addons/plugins',
+			);
+		}
+		if(group_has_role('blog', 'widgets')){
+			$info['sections']['widgets'] = array(
+				'name' => 'global:widgets',
+				'uri' => 'admin/addons/widgets',
+			);
+		}
+		if(group_has_role('blog', 'field_types')){
+			$info['sections']['field_types'] = array(
+				'name' => 'global:field_types',
+				'uri' => 'admin/addons/field-types',
+			);
+		}
 	
 		// Add upload options to various modules
 		if ( ! class_exists('Module_import') and Settings::get('addons_upload'))
@@ -118,13 +130,21 @@ class Module_Addons extends Module
 
 	public function admin_menu(&$menu)
 	{
-		$menu['lang:cp:nav_addons'] = array(
-			'lang:cp:nav_modules'			=> 'admin/addons',
-			'lang:global:themes'			=> 'admin/addons/themes',
-			'lang:global:plugins'			=> 'admin/addons/plugins',
-			'lang:global:widgets'			=> 'admin/addons/widgets',
-			'lang:global:field_types'		=> 'admin/addons/field-types'
-		);
+		$menu['lang:cp:nav_addons'] = array();
+		if(group_has_role('blog', 'modules'))
+			$menu['lang:cp:nav_addons'] += array('lang:cp:nav_modules' => 'admin/addons');
+
+		if(group_has_role('blog', 'themes'))
+			$menu['lang:cp:nav_addons'] += array('lang:global:themes' => 'admin/addons/themes');
+
+		if(group_has_role('blog', 'plugins'))
+			$menu['lang:cp:nav_addons'] += array('lang:global:plugins' => 'admin/addons/plugins');
+
+		if(group_has_role('blog', 'widgets'))
+			$menu['lang:cp:nav_addons'] += array('lang:global:widgets' => 'admin/addons/widgets');
+
+		if(group_has_role('blog', 'field_types'))
+			$menu['lang:cp:nav_addons'] += array('lang:global:field_types' => 'admin/addons/field-types');
 
 		add_admin_menu_place('lang:cp:nav_addons', 6);
 	}

@@ -4,3 +4,4 @@
 $lang['blog:role_put_live']		= 'Publikasikan artikel';
 $lang['blog:role_edit_live']	= 'Edit artikel terpublikasi';
 $lang['blog:role_delete_live'] 	= 'Hapus artikel terpublikasi';
+$lang['blog:role_admin_blog_fields'] 	= 'Atur Blog Field';

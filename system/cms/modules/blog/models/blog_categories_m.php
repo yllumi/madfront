@@ -19,6 +19,7 @@ class Blog_categories_m extends MY_Model
 	public function insert($input = array(), $skip_validation = false)
 	{
 		parent::insert(array(
+			'site_id' => SITE_ID,
 			'title' => $input['title'],
 			'slug' => $input['slug'],
 		));
@@ -37,10 +38,11 @@ class Blog_categories_m extends MY_Model
 	 */
 	public function update($id, $input, $skip_validation = false)
 	{
-		return parent::update($id, array(
-			'title' => $input['title'],
-			'slug' => $input['slug'],
-		));
+		if($this->where('site_id',SITE_ID)->get_by('id', $id))
+			return parent::update($id, array(
+				'title' => $input['title'],
+				'slug' => $input['slug'],
+			));
 	}
 
 	/**
@@ -55,6 +57,7 @@ class Blog_categories_m extends MY_Model
 	{
 		return (bool)$this->db->where('title', $title)
 			->where('id != ', $id)
+			->where('site_id', SITE_ID)
 			->from('blog_categories')
 			->count_all_results();
 	}
@@ -71,6 +74,7 @@ class Blog_categories_m extends MY_Model
 	{
 		return (bool)$this->db->where('slug', $slug)
 			->where('id != ', $id)
+			->where('site_id', SITE_ID)
 			->from('blog_categories')
 			->count_all_results();
 	}
@@ -85,6 +89,7 @@ class Blog_categories_m extends MY_Model
 	public function insert_ajax($input = array())
 	{
 		return parent::insert(array(
+			'site_id' => SITE_ID,
 			'title' => $input['title'],
 			//is something wrong with convert_accented_characters?
 			//'slug'=>url_title(strtolower(convert_accented_characters($input['title'])))

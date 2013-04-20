@@ -43,8 +43,11 @@ class Module_Multisite_Manager extends Module {
 	public function install()
 	{
 		// delete unique ref from core_sites and set default value for it
-		$this->db->query("ALTER TABLE `core_sites` DROP INDEX `Unique ref`");
 		$this->db->query("ALTER TABLE `core_sites` CHANGE `ref` `ref` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'default'");
+
+		// alter for unique field in blog categories
+		$this->db->query("ALTER TABLE `default_blog_categories` DROP INDEX `unique_title`");
+		$this->db->query("ALTER TABLE `default_blog_categories` DROP INDEX `unique_slug`");
 
 		// add site_id dield to some table
 		$multisite_tables = array(

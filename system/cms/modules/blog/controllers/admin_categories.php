@@ -64,7 +64,7 @@ class Admin_Categories extends Admin_Controller
 								->order_by('title')
 								->limit($pagination['limit'])
 								->offset($pagination['offset'])
-								->get_all();
+								->get_many_by('site_id', SITE_ID);
 
 		$this->template
 			->title($this->module_details['name'], lang('cat:list_title'))
@@ -176,7 +176,7 @@ class Admin_Categories extends Admin_Controller
 			$deleted_ids = array();
 			foreach ($id_array as $id)
 			{
-				if ($this->blog_categories_m->delete($id))
+				if ($this->blog_categories_m->where('site_id', SITE_ID)->delete_by('id', $id))
 				{
 					$deleted++;
 					$deleted_ids[] = $id;

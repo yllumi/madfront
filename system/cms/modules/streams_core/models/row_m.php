@@ -183,7 +183,7 @@ class Row_m extends MY_Model {
 
 		if ( ! isset($site_ref)) $site_ref = "default";
 
-		$this->db->set_dbprefix($site_ref.'_');
+		$this->db->set_dbprefix('default_');
 
 		// -------------------------------------
 		// Convenience Vars

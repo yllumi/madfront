@@ -67,7 +67,7 @@ class MX_Router extends CI_Router
 		 * Load the site ref for multi-site support if the "sites" module exists
 		 * and the multi-site constants haven't been defined already (hmvc request)
 		 */
-		if ($path = self::is_multisite() and ! defined('SITE_REF'))
+		if (! defined('SITE_REF'))
 		{
 			require_once BASEPATH.'database/DB'.EXT;
 			
@@ -136,8 +136,8 @@ class MX_Router extends CI_Router
 				// Path to the addon folder for this site
 				define('ADDONPATH', ADDON_FOLDER.SITE_REF.'/');
 
-				// the path to the MSM module
-				define('MSMPATH', str_replace('__SITE_REF__', SITE_REF, $path));
+				// the path to the MSM module, #madFrontHack don't need this
+				// define('MSMPATH', str_replace('__SITE_REF__', SITE_REF, $path));
 			}
 		}
 

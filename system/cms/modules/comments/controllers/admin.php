@@ -61,8 +61,10 @@ class Admin extends Admin_Controller {
 	 */
 	public function index()
 	{
+		$base_where = array('site_id' => SITE_ID);
+
 		// Only show is_active = 0 if we are moderating comments
-		$base_where = array('comments.is_active' => (int) ! Settings::get('moderate_comments'));
+		$base_where += array('comments.is_active' => (int) ! Settings::get('moderate_comments'));
 
 		//capture active
 		$base_where['comments.is_active'] = is_int($this->session->flashdata('is_active')) ? $this->session->flashdata('is_active') : $base_where['comments.is_active'];
@@ -153,7 +155,7 @@ class Admin extends Admin_Controller {
 			));
 
 			// Update the comment
-			$this->comment_m->update($id, $comment)
+			$this->comment_m->update_by(array('site_id'=>SITE_ID,'id'=>$id), $comment)
 				? $this->session->set_flashdata('success', lang('comments:edit_success'))
 				: $this->session->set_flashdata('error', lang('comments:edit_error'));
 
@@ -184,7 +186,7 @@ class Admin extends Admin_Controller {
 	{
 		$api_key = Settings::get('akismet_api_key');
 		$comment = $this->comment_m->get($id);
-		if ( ! empty($api_key))
+		if ( ! empty($api_key) and ! empty($comment))
 		{	
 			$akismet = $this->load->library('akismet');
 			$comment_array = array(

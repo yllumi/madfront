@@ -125,6 +125,7 @@ class Page_m extends MY_Model
 		if ($uri === null)
 		{
 			$page = $this->db
+				->where('site_id', SITE_ID)
 				->where('is_home', true)
 				->get('pages')
 				->row();
@@ -142,6 +143,7 @@ class Page_m extends MY_Model
 			while ( ! $page AND $uri AND $i < 15) /* max of 15 in case it all goes wrong (this shouldn't ever be used) */
 			{
 				$page = $this->db
+					->where('site_id', SITE_ID)
 					->where('uri', $uri)
 					->limit(1)
 					->get('pages')
@@ -285,6 +287,7 @@ class Page_m extends MY_Model
 			->select('pages.*, page_types.id as page_type_id, page_types.stream_id, page_types.body')
 			->select('page_types.save_as_files, page_types.slug as page_type_slug, page_types.title as page_type_title, page_types.js as page_type_js, page_types.css as page_type_css')
 			->join('page_types', 'page_types.id = pages.type_id', 'left')
+			->where('site_id', SITE_ID)
 			->where('pages.id', $id)
 			->get($this->_table)
 			->row();
@@ -359,6 +362,7 @@ class Page_m extends MY_Model
 	public function get_home()
 	{
 		return $this->db
+			->where('site_id', SITE_ID)
 			->where('is_home', true)
 			->get('pages')
 			->row();
@@ -375,9 +379,12 @@ class Page_m extends MY_Model
 	{
 		$all_pages = $this->db
 			->select('id, parent_id, title, status')
+			->where('site_id', SITE_ID)
 			->order_by('`order`')
 			->get('pages')
 			->result_array();
+
+		if(empty($all_pages)) return false;
 
 		// First, re-index the array.
 		foreach ($all_pages as $row)
@@ -491,6 +498,7 @@ class Page_m extends MY_Model
 		$id_array[] = $id;
 
 		$children = $this->db->select('id, title')
+			->where('site_id', SITE_ID)
 			->where('parent_id', $id)
 			->get('pages')
 			->result();
@@ -525,6 +533,7 @@ class Page_m extends MY_Model
 		{
 			$page = $this->db
 				->select('slug, parent_id')
+				->where('site_id', SITE_ID)
 				->where('id', $current_id)
 				->get('pages')
 				->row();
@@ -567,6 +576,7 @@ class Page_m extends MY_Model
 	{
 		// first reset the URI of all root pages
 		$this->db
+			->where('site_id', SITE_ID)
 			->where('parent_id', 0)
 			->set('uri', 'slug', false)
 			->update('pages');
@@ -595,11 +605,12 @@ class Page_m extends MY_Model
 		{
 			// Remove other homepages so this one can have the spot
 			$this->skip_validation = true;
-			$this->update_by('is_home', 1, array('is_home' => 0));
+			$this->where('site_id', SITE_ID)->update_by('is_home', 1, array('is_home' => 0));
 		}
 
 		// validate the data and insert it if it passes
 		$id = $this->insert(array(
+			'site_id'			=> SITE_ID,
 			'slug'				=> $input['slug'],
 			'title'				=> $input['title'],
 			'uri'				=> null,
@@ -693,12 +704,12 @@ class Page_m extends MY_Model
 		{
 			// Remove other homepages so this one can have the spot
 			$this->skip_validation = true;
-			$this->update_by('is_home', 1, array('is_home' => 0));
+			$this->where('site_id', SITE_ID)->update_by('is_home', 1, array('is_home' => 0));
 		}
 			// replace the old slug with the new
 		
 		// validate the data and update
-		$result = $this->update($id, array(
+		$result = $this->where('site_id', SITE_ID)->update($id, array(
 			'slug'				=> $input['slug'],
 			'title'				=> $input['title'],
 			'uri'				=> null,
@@ -773,10 +784,12 @@ class Page_m extends MY_Model
 		}
 
 		// Delete the page.
+		$this->db->where('site_id', SITE_ID);
 		$this->db->where_in('id', $ids);
 		$this->db->delete('pages');
 
 		// Our navigation links should go as well.
+		$this->db->where('site_id', SITE_ID);
 		$this->db->where_in('page_id', $ids);
 		$this->db->delete('navigation_links');	
 
@@ -803,6 +816,7 @@ class Page_m extends MY_Model
 		return (bool) parent::count_by(array(
 			'id !=' => $id,
 			'slug' => $slug,
+			'site_id' => SITE_ID,
 			'parent_id' => $parent_id
 		)) > 0;
 	}

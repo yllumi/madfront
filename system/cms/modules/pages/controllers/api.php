@@ -28,12 +28,12 @@ class Api extends API_Controller
 		
 		if ($this->input->get('status'))
 		{
-			$results = $this->page_m->get_many_by('status', $this->input->get('status'));
+			$results = $this->page_m->where('site_id', SITE_ID)->get_many_by('status', $this->input->get('status'));
 		}
 		
 		else
 		{
-			$results = $this->page_m->get_all();
+			$results = $this->page_m->get_many_by('site_id', SITE_ID);
 		}
 		
 		$pages = array();
@@ -67,7 +67,7 @@ class Api extends API_Controller
 		$this->load->model('page_m');
 
 		// Get the page along with its chunks.
-		$page = $this->page_m->get($id);
+		$page = $this->page_m->where('site_id', SITE_ID)->get_by('id', $id);
 
 		if ( $page and ! empty($page))
 		{

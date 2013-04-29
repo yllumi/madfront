@@ -81,13 +81,15 @@ class Module_Pages extends Module
 			    'pages' => array(
 				    'name' => 'pages:list_title',
 				    'uri' => 'admin/pages',
-				),
-				'types' => array(
-				    'name' => 'page_types:list_title',
-				    'uri' => 'admin/pages/types'
-			    ),
+				)
 			),
 		);
+
+		if(group_has_role('pages', 'create_types'))
+			$info['sections']['types'] = array(
+				    'name' => 'page_types:list_title',
+				    'uri' => 'admin/pages/types'
+			    );
 
 		// We check that the table exists (only when in the admin controller)
 		// to avoid any pre 109 migration module class spawning issues.

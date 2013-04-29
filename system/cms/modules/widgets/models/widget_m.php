@@ -22,6 +22,7 @@ class Widget_m extends MY_Model
 			->from('widget_areas wa')
 			->join('widget_instances wi', 'wa.id = wi.widget_area_id')
 			->join('widgets w', 'wi.widget_id = w.id')
+			->where('wi.site_id', SITE_ID)
 			->where('wi.id', $id);
 
 		$result = $this->db->get()->row();
@@ -42,6 +43,7 @@ class Widget_m extends MY_Model
 			->join('widget_instances wi', 'wa.id = wi.widget_area_id')
 			->join('widgets w', 'wi.widget_id = w.id')
 			->where('wa.slug', $slug)
+			->where('wa.site_id', SITE_ID)
 			->order_by('wi.order');
 
 		$result = $this->db->get()->result();
@@ -68,6 +70,7 @@ class Widget_m extends MY_Model
 			->join('widget_instances wi', 'wa.id = wi.widget_area_id')
 			->join('widgets w', 'wi.widget_id = w.id')
 			->where_in('wa.slug', $slug)
+			->where('wa.site_id', SITE_ID)
 			->order_by('wi.order');
 
 		$result = $this->db->get()->result();
@@ -82,12 +85,12 @@ class Widget_m extends MY_Model
 
 	public function get_areas()
 	{
-		return $this->db->get('widget_areas')->result();
+		return $this->db->where('site_id', SITE_ID)->get('widget_areas')->result();
 	}
 
 	public function get_area_by($field, $id)
 	{
-		return $this->db->get_where('widget_areas', array($field => $id))->row();
+		return $this->db->get_where('widget_areas', array($field => $id, 'site_id' => SITE_ID))->row();
 	}
 
 	public function get_widget_by($field, $id)
@@ -220,6 +223,7 @@ class Widget_m extends MY_Model
 	public function insert_area($input)
 	{
 		return $this->db->insert('widget_areas', array(
+			'site_id' => SITE_ID,
 			'title' => $input['title'],
 			'slug' 	=> $input['slug']
 		));
@@ -235,6 +239,8 @@ class Widget_m extends MY_Model
 		{
 			$this->db->where('slug', $input['area_slug']);
 		}
+
+		$this->db->where('site_id', SITE_ID);
 
 		$this->db->update('widget_areas', array(
 				'title'	=> $input['title'],
@@ -266,12 +272,14 @@ class Widget_m extends MY_Model
 			'options'			=> $input['options'],
 			'order'				=> $order,
 			'created_on'		=> now(),
+			'site_id'			=> SITE_ID
 		));
 	}
 
 	public function update_instance($instance_id, $input)
 	{
 		$this->db->where('id', $instance_id);
+		$this->db->where('site_id', SITE_ID);
 
 		return $this->db->update('widget_instances', array(
         	'title'				=> $input['title'],
@@ -284,6 +292,7 @@ class Widget_m extends MY_Model
 	public function update_instance_order($id, $order)
 	{
 		$this->db->where('id', $id);
+		$this->db->where('site_id', SITE_ID);
 
 		return $this->db->update('widget_instances', array(
         	'order' => (int) $order
@@ -319,14 +328,14 @@ class Widget_m extends MY_Model
 		}
 
 		// Delete widgets in that area
-		$this->db->delete('widget_instances', array('widget_area_id' => $id));
+		$this->db->delete('widget_instances', array('widget_area_id' => $id, 'site_id' => SITE_ID));
 
 		// Delete this area
-		return $this->db->delete('widget_areas', array('id' => $id));
+		return $this->db->delete('widget_areas', array('id' => $id, 'site_id' => SITE_ID));
 	}
 
 	public function delete_instance($id)
 	{
-		return $this->db->delete('widget_instances', array('id' => $id));
+		return $this->db->delete('widget_instances', array('id' => $id, 'site_id' => SITE_ID));
 	}
 }

@@ -149,7 +149,7 @@ class Admin_instances extends Admin_Controller {
 		if ( ! ($id && $widget = $this->widgets->get_instance($id)))
 		{
 			// @todo: set error
-			return false;
+			show_404();
 		}
 
 		$data = array();

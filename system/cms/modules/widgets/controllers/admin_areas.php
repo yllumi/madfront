@@ -169,7 +169,7 @@ class Admin_areas extends Admin_Controller {
 		if ( ! ($id && $area = $this->widgets->get_area($id)))
 		{
 			// @todo: set error
-			return false;
+			show_404();
 		}
 
 		$data = array();

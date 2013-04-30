@@ -108,6 +108,7 @@ class Admin extends Admin_Controller
 
 		// Get the redirect
 		$redirect = $this->redirect_m->get($id);
+		if(!$redirect) show_404();
 
 		if ($this->form_validation->run())
 		{
@@ -161,6 +162,8 @@ class Admin extends Admin_Controller
 			if ($deleted > 0)
 			{
 				$this->session->set_flashdata('success', sprintf($this->lang->line('redirects:mass_delete_success'), $deleted, $to_delete));
+			} else {
+				$this->session->set_flashdata('error', sprintf($this->lang->line('redirects:mass_delete_error'), $id));
 			}
 			
 			Events::trigger('redirect_deleted', $id_array);

@@ -6,6 +6,10 @@ $lang['redirects:to']                        = 'Kepada';
 $lang['redirects:edit']                      = 'Edit';
 $lang['redirects:delete']                    = 'Hapus';
 
+// redirect types
+$lang['redirects:301']                       = '301 - Pindahkan Permanen';
+$lang['redirects:302']                       = '302 - Pindahkan Sementara';
+
 // titles
 $lang['redirects:add_title']                 = 'Tambah Redirect';
 $lang['redirects:edit_title']                = 'Edit Redirect';

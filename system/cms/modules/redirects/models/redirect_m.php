@@ -11,19 +11,21 @@ class Redirect_m extends MY_Model
 	public function get($id)
 	{
 		return $this->db->where($this->primary_key, $id)
+			->where('site_id', SITE_ID)
 			->get($this->_table)
 			->row_array();
 	}
 
 	public function get_all()
 	{
-		//$this->db->where('site_id', $this->site->id);
+		$this->db->where('site_id', SITE_ID);
 		return $this->db->get('redirects')->result();
 	}
 
 	public function get_from($from)
 	{
 		return $this->db
+			->where('site_id', SITE_ID)
 			->like('from', $from, 'none')
 			->get($this->_table)
 			->row();
@@ -31,7 +33,7 @@ class Redirect_m extends MY_Model
 
 	public function count_all()
 	{
-		return $this->db->count_all_results('redirects');
+		return $this->db->where('site_id', SITE_ID)->count_all_results('redirects');
 	}
 
 	public function insert($input = array(), $skip_validation = false)
@@ -40,6 +42,7 @@ class Redirect_m extends MY_Model
 			'`type`' => $input['type'],
 			'`from`' => str_replace('*', '%', $input['from']),
 			'`to`' => trim($input['to'], '/'),
+			'`site_id`' => SITE_ID
 		));
 	}
 
@@ -47,6 +50,7 @@ class Redirect_m extends MY_Model
 	{
 		$this->db->where(array(
 			'id' => $id,
+			'site_id' => SITE_ID
 		));
 
 		return $this->db->update('redirects', array(
@@ -58,9 +62,11 @@ class Redirect_m extends MY_Model
 
 	public function delete($id)
 	{
-		return $this->db->delete('redirects', array(
+		$this->db->delete('redirects', array(
 			'id' => $id,
+			'site_id' => SITE_ID
 		));
+		return $this->db->affected_rows();
 	}
 
 	// Callbacks
@@ -73,6 +79,7 @@ class Redirect_m extends MY_Model
 
 		return $this->db->where(array(
 			'`from`' =>  str_replace('*', '%', $from),
+			'`site_id`' => SITE_ID
 		))->count_all_results('redirects');
 	}
 }

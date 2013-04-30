@@ -24,7 +24,7 @@ class Navigation_m extends MY_Model
 	 */
 	public function get_link($id = 0)
 	{
-		return $this->db->get_where('navigation_links', array('id'=>$id))->row();
+		return $this->db->get_where('navigation_links', array('id'=>$id, 'site_id'=>SITE_ID))->row();
 	}
 	
 	/**
@@ -36,7 +36,7 @@ class Navigation_m extends MY_Model
 	 */
 	public function get_url($id = 0)
 	{
-		$query = $this->db->get_where('navigation_links', array('id'=>$id));
+		$query = $this->db->get_where('navigation_links', array('id'=>$id, 'site_id'=>SITE_ID));
 
 		if ($query->num_rows() == 0)
 		{
@@ -56,15 +56,16 @@ class Navigation_m extends MY_Model
 	public function insert_link($input = array())
 	{
 		$input = $this->_format_array($input);
-		
+
 		$row = $this->db->order_by('position', 'desc')
 			->limit(1)
-			->get_where('navigation_links', array('navigation_group_id' => (int) $input['navigation_group_id']))
+			->get_where('navigation_links', array('navigation_group_id' => (int) $input['navigation_group_id'], 'site_id' => SITE_ID))
 			->row();
 			
 		$position = isset($row->position) ? $row->position + 1 : 1;
 		
 		$this->db->insert('navigation_links', array(
+			'site_id'				=> SITE_ID,
         	'title' 				=> $input['title'],
         	'link_type' 			=> $input['link_type'],
         	'url' 					=> isset($input['url']) ? $input['url'] : '',
@@ -113,10 +114,10 @@ class Navigation_m extends MY_Model
 			$insert['parent'] = 0;
 		
 			// reset all of this link's children
-			$this->db->where('parent', $id)->update($this->_table, array('parent' => 0));
+			$this->db->where('parent', $id)->update($this->_table, array('parent' => 0, 'site_id' => SITE_ID));
 		}
 
-		return $this->db->update('navigation_links', $insert, array('id' => $id));
+		return $this->db->update('navigation_links', $insert, array('id' => $id, 'site_id' => SITE_ID));
 	}
 	
 	/**
@@ -132,6 +133,7 @@ class Navigation_m extends MY_Model
 	{
 		
 		return $this->db->where_in('navigation_group_id', $group)
+			->where('site_id', SITE_ID)
 			->set($data)
 			->update($this->_table);
 	}
@@ -181,6 +183,7 @@ class Navigation_m extends MY_Model
 		}
 
 		$all_links = $this->db->where('navigation_group_id', $group)
+			 ->where('site_id', SITE_ID)
 			 ->get($this->_table)
 			 ->result_array();
 
@@ -236,7 +239,7 @@ class Navigation_m extends MY_Model
 		{
 			foreach ($link['children'] as $i => $child)
 			{
-				$this->db->where('id', str_replace('link_', '', $child['id']));
+				$this->db->where('id', str_replace('link_', '', $child['id']))->where('site_id', SITE_ID);
 				$this->db->update($this->_table, array('parent' => str_replace('link_', '', $link['id']), 'position' => $i));
 				
 				//repeat as long as there are children
@@ -302,7 +305,9 @@ class Navigation_m extends MY_Model
 	{
 		$params = is_array($id) ? $id : array('id' => $id);
 		
-		return $this->db->delete('navigation_links', $params);
+		$this->db->where('site_id', SITE_ID)->delete('navigation_links', $params);
+
+		return $this->db->affected_rows();
 	}
 	
 	/**
@@ -426,7 +431,7 @@ class Navigation_m extends MY_Model
 	 */
 	public function get_group_by($what, $value)
 	{
-		return $this->db->where($what, $value)->get('navigation_groups')->row();
+		return $this->db->where('site_id', SITE_ID)->where($what, $value)->get('navigation_groups')->row();
 	}
 	
 	/**
@@ -437,7 +442,7 @@ class Navigation_m extends MY_Model
 	 */
 	public function get_groups()
 	{
-		return $this->db->get('navigation_groups')->result();
+		return $this->db->where('site_id', SITE_ID)->get('navigation_groups')->result();
 	}
 	
 	/**
@@ -451,7 +456,8 @@ class Navigation_m extends MY_Model
 	{
 		$this->db->insert('navigation_groups', array(
         	'title' => $input['title'],
-        	'abbrev' => $input['abbrev']
+        	'abbrev' => $input['abbrev'],
+        	'site_id' => SITE_ID
 		));
 
         return $this->db->insert_id();
@@ -468,7 +474,7 @@ class Navigation_m extends MY_Model
 	{
 		$params = is_array($id) ? $id : array('id'=>$id);
 		
-		$this->db->delete('navigation_groups', $params);
+		$this->db->where('site_id', SITE_ID)->delete('navigation_groups', $params);
         return $this->db->affected_rows();
 	}
 }

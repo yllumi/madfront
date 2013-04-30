@@ -132,10 +132,12 @@ class Admin_groups extends Admin_Controller
 		if ( ! empty($deleted_ids))
 		{
 			Events::trigger('navigation_group_deleted', $deleted_ids);
+			// Set the message and redirect
+			$this->session->set_flashdata('success', $this->lang->line('nav:group_mass_delete_success'));
+		} else {
+			$this->session->set_flashdata('error', $this->lang->line('nav:group_not_exist_error'));
 		}
 
-		// Set the message and redirect
-		$this->session->set_flashdata('success', $this->lang->line('nav:group_mass_delete_success'));
 		redirect('admin/navigation/index');
 	}
 }

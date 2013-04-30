@@ -220,6 +220,14 @@ class Admin extends Admin_Controller {
 		if ($this->form_validation->run())
 		{
 			$input = $this->input->post();
+			
+			$nav_group = $this->navigation_m->get_group_by('id', $input['navigation_group_id']);
+			if(! isset($nav_group->title)){
+				$this->session->set_flashdata('error', lang('nav:link_add_error'));
+				echo 'success';
+				return;
+			}
+
 			$input['restricted_to'] = isset($input['restricted_to']) ? implode(',', $input['restricted_to']) : '';
 
 			// Got post?
@@ -243,6 +251,10 @@ class Admin extends Admin_Controller {
 				return;
 			}
 		}
+
+		// show_404 when nav group for that site is unavailable
+		$nav_group = $this->navigation_m->get_group_by('id', $group_id);
+		if(! isset($nav_group->title)) show_404();
 
 		// check for errors
 		if (validation_errors())
@@ -298,6 +310,7 @@ class Admin extends Admin_Controller {
 
 		if ( ! $link)
 		{
+			set_status_header(404, lang('nav:link_not_exist_error'));
 			$this->template->messages['error'] = lang('nav:link_not_exist_error');
 
 			exit($this->load->view('admin/partials/notices', compact('link', 'group_options')));
@@ -352,6 +365,8 @@ class Admin extends Admin_Controller {
 	 */
 	public function delete($id = 0)
 	{
+		$deleted_ids = false;
+
 		$id_array = (!empty($id)) ? array($id) : $this->input->post('action_to');
 
 		// Loop through each item to delete
@@ -359,14 +374,20 @@ class Admin extends Admin_Controller {
 		{
 			foreach ($id_array as $id)
 			{
-				$this->navigation_m->delete_link($id);
+				if($this->navigation_m->delete_link($id))
+					$deleted_ids[] = $id;
 			}
 
 			Events::trigger('post_navigation_delete', $id_array);
 		}
 		// Flush the cache and redirect
 		$this->pyrocache->delete_all('navigation_m');
-		$this->session->set_flashdata('success', $this->lang->line('nav:link_delete_success'));
+
+		if(! empty($deleted_ids))
+			$this->session->set_flashdata('success', $this->lang->line('nav:link_delete_success'));
+		else
+			$this->session->set_flashdata('error', $this->lang->line('nav:link_not_exist_error'));
+
 		redirect('admin/navigation');
 	}
 
@@ -393,7 +414,7 @@ class Admin extends Admin_Controller {
 
 		if ( ! $tree)
 		{
-			if ($pages = $this->db->select('id, parent_id, title')->get('pages')->result())
+			if ($pages = $this->db->select('id, parent_id, title')->where('site_id', SITE_ID)->get('pages')->result())
 			{
 				foreach($pages as $page)
 				{

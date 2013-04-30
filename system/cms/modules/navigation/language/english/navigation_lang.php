@@ -36,6 +36,7 @@ $lang['nav:group_mass_delete_success']          = 'The navigation group has been
 $lang['nav:link_add_success']                   = 'The navigation link was added.';
 $lang['nav:link_add_error']                     = 'An unexpected error occurred.';
 $lang['nav:link_not_exist_error']               = 'This navigation link does not exist.';
+$lang['nav:group_not_exist_error']               = 'This navigation group does not exist.';
 $lang['nav:link_edit_success']                  = 'The navigation link was saved.';
 $lang['nav:link_delete_success']                = 'The navigation link has been deleted.';
 $lang['nav:choose_value']						= 'The %s field must not be empty.';

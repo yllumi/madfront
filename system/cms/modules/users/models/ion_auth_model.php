@@ -570,6 +570,8 @@ class Ion_auth_model extends CI_Model
 			$id = $this->db->insert_id();
 		}
 
+		$this->register_to_site($id);
+
 		// Use streams to add the profile data.
 		// Even if there is not data to add, we still want an entry
 		// for the profile data.
@@ -594,6 +596,23 @@ class Ion_auth_model extends CI_Model
 		}
 	}
 
+	// -------------------------------------------------------------------
+	/**
+	 * Register to site
+	 *
+	 * @return bool
+	 * @author yllumi
+	 **/
+
+	private function register_to_site($id){
+		$this->db->insert('users_site', array(
+				'site_id' => SITE_ID,
+				'user_id' => $id
+			));
+		return $this->db->affected_rows();
+	}
+
+
 	// --------------------------------------------------------------------------
 
 	/**
@@ -609,7 +628,11 @@ class Ion_auth_model extends CI_Model
 			return false;
 		}
 
-		$this->db->select('username, email, id, password, group_id')
+		$user_table = $this->tables['users'];
+
+		$this->db->select("{$user_table}.username, {$user_table}.email, {$user_table}.id, {$user_table}.password, {$user_table}.group_id")
+			->join('users_site us', "us.user_id = {$user_table}.id")
+			->where('us.site_id', SITE_ID)
 			->where(sprintf('(username = "%1$s" OR email = "%1$s")', $this->db->escape_str($identity)));
 
 		if (isset($this->ion_auth->_extra_where))
@@ -655,6 +678,8 @@ class Ion_auth_model extends CI_Model
 
 		$user = $this->db
 			->where('active', 1)
+			->join('users_site us', "us.user_id = ".$this->tables['users'].".id")
+			->where('us.site_id', SITE_ID)
 			->limit(1)
 			->get($this->tables['users'])
 			->row();
@@ -736,6 +761,8 @@ class Ion_auth_model extends CI_Model
 
 		$this->db->join($this->tables['meta'], $this->tables['users'].'.id = '.$this->tables['meta'].'.'.$this->meta_join, 'left');
 		$this->db->join($this->tables['groups'], $this->tables['users'].'.group_id = '.$this->tables['groups'].'.id', 'left');
+		$this->db->join('users_site', 'users_site.user_id = '.$this->tables['users'].'.id', 'left');
+		$this->db->where('site_id', SITE_ID);
 
 		if (is_string($group))
 		{
@@ -783,6 +810,9 @@ class Ion_auth_model extends CI_Model
 		{
 			$this->db->where($this->ion_auth->_extra_where);
 		}
+
+		$this->db->join('users_site', 'users_site.user_id = '.$this->tables['users'].'.id', 'left');
+		$this->db->where('site_id', SITE_ID);
 
 		$this->db->from($this->tables['users']);
 
@@ -986,6 +1016,8 @@ class Ion_auth_model extends CI_Model
 		$id || $id = $this->session->userdata('user_id');
 
 		$user = $this->db->select('group_id')
+			->join('users_site', 'users_site.user_id = '.$this->tables['users'].'.id', 'left')
+			->where('site_id', SITE_ID)
 			->where('id', $id)
 			->get($this->tables['users'])
 			->row();
@@ -1118,10 +1150,13 @@ class Ion_auth_model extends CI_Model
 	 **/
 	public function delete_user($id)
 	{
+		if(! $this->check_site_by_user($id) OR $this->current_user->group != 'admin') return false;
+
 		$this->db->trans_begin();
 
 		$this->db->delete($this->tables['meta'], array($this->meta_join => $id));
 		$this->db->delete($this->tables['users'], array('id' => $id));
+		$this->db->delete('users_site', array('user_id' => $id));
 
 		if ($this->db->trans_status() === false)
 		{
@@ -1131,6 +1166,38 @@ class Ion_auth_model extends CI_Model
 
 		$this->db->trans_commit();
 		return true;
+	}
+
+	// --------------------------------------------------------------------------
+
+	public function get_sites_by_user($uid = 0)
+	{
+		$sites = $this->db->where('user_id', $uid)
+					->get('users_site')->result();
+
+		$site_ids = false;
+		if($sites){
+			foreach ($sites as $site) {
+				$site_ids[] = $site->site_id;
+			}
+		}
+
+		return $site_ids;
+	}
+
+	public function check_site_by_user($uid = 0, $sid = false)
+	{
+		if(!$sid) $sid = SITE_ID;
+
+		$site_ids = $this->get_sites_by_user($uid);
+		if($site_ids){
+			foreach ($site_ids as $site_id) {
+				if($site_id == $sid)
+					return true;
+			}
+		}
+
+		return false;
 	}
 
 	// --------------------------------------------------------------------------

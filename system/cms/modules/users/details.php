@@ -70,15 +70,14 @@ class Module_Users extends Module {
 			'frontend' 	=> false,
 			'backend'  	=> true,
 			'menu'	  	=> false,
-			'roles'		=> array('admin_profile_fields')
-			);
+			'roles'		=> array('admin_profile_fields', 'add_user')
+		);
 
 		if (function_exists('group_has_role'))
 		{
-			if(group_has_role('users', 'admin_profile_fields'))
+			if(group_has_role('users', 'add_user'))
 			{
-				$info['sections'] = array(
-					'users' => array(
+				$info['sections']['users'] = array(
 							'name' 	=> 'user:list_title',
 							'uri' 	=> 'admin/users',
 								'shortcuts' => array(
@@ -88,8 +87,12 @@ class Module_Users extends Module {
 										'class' => 'add'
 										)
 									)
-								),
-					'fields' => array(
+								);
+			}
+
+			if(group_has_role('users', 'admin_profile_fields'))
+			{
+				$info['sections']['fields'] = array(
 							'name' 	=> 'user:profile_fields_label',
 							'uri' 	=> 'admin/users/fields',
 								'shortcuts' => array(
@@ -99,8 +102,7 @@ class Module_Users extends Module {
 										'class' => 'add'
 										)
 									)
-								)
-						);
+							);
 			}
 		}
 

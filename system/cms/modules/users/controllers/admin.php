@@ -106,6 +106,8 @@ class Admin extends Admin_Controller
 		// Using this data, get the relevant results
 		$this->db->order_by('active', 'desc')
 			->join('groups', 'groups.id = users.group_id')
+			->join('users_site', 'users.id = users_site.user_id')
+			->where('site_id', SITE_ID)
 			->where_not_in('groups.name', $skip_admin)
 			->limit($pagination['limit'], $pagination['offset']);
 
@@ -281,7 +283,9 @@ class Admin extends Admin_Controller
 	public function edit($id = 0)
 	{
 		// Get the user's data
-		if ( ! ($member = $this->ion_auth->get_user($id)))
+		$member = $this->ion_auth->get_user($id);
+
+		if ( ! $member OR ($member->group == 'admin' AND $this->current_user->group != 'admin'))
 		{
 			$this->session->set_flashdata('error', lang('user:edit_user_not_found_error'));
 			redirect('admin/users');

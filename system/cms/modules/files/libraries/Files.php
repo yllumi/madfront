@@ -85,6 +85,7 @@ class Files
 		}
 
 		$insert = array('parent_id' => $parent, 
+						'site_id' => SITE_ID,
 						'slug' => $slug, 
 						'name' => $name,
 						'location' => $location,
@@ -153,11 +154,13 @@ class Files
 		}
 
 		$folders = ci()->file_folders_m->where('parent_id', $parent)
+			->where('site_id', SITE_ID)
 			->where('hidden', 0)
 			->order_by('sort')
 			->get_all();
 
 		$files = ci()->file_m->where('folder_id', $parent)
+			->where('site_id', SITE_ID)
 			->order_by('sort')
 			->get_all();
 
@@ -205,7 +208,7 @@ class Files
 		$folders = array();
 		$folder_array = array();
 
-		ci()->db->select('id, parent_id, slug, name')->where('hidden', 0)->order_by('sort');
+		ci()->db->select('id, parent_id, slug, name')->where('hidden', 0)->where('site_id', SITE_ID)->order_by('sort');
 		$all_folders = ci()->file_folders_m->get_all();
 
 		// we must reindex the array first
@@ -305,9 +308,9 @@ class Files
 	**/
 	public static function delete_folder($id = 0)
 	{
-		$folder = ci()->file_folders_m->get($id);
+		$folder = ci()->file_folders_m->where('site_id', SITE_ID)->get_by('id', $id);
 
-		if ( ! $files = ci()->file_m->get_by('folder_id', $id) and ! ci()->file_folders_m->get_by('parent_id', $id))
+		if ( ! $files = ci()->file_m->get_by('folder_id', $id) and ! ci()->file_folders_m->get_by('parent_id', $id) and isset($folder->site_id))
 		{
 			ci()->file_folders_m->delete($id);
 
@@ -352,7 +355,7 @@ class Files
 		// this keeps a long running upload from stalling the site
 		session_write_close();
 
-		$folder = ci()->file_folders_m->get($folder_id);
+		$folder = ci()->file_folders_m->where('site_id', SITE_ID)->get_by('id', $folder_id);
 
 		if ($folder)
 		{
@@ -377,6 +380,7 @@ class Files
 
 				$data = array(
 					'folder_id'		=> (int) $folder_id,
+					'site_id'		=> SITE_ID,
 					'user_id'		=> (int) ci()->current_user->id,
 					'type'			=> self::$_type,
 					'name'			=> $replace_file ? $replace_file->name : $name ? $name : $file['orig_name'],
@@ -472,6 +476,7 @@ class Files
 	{
 		$file = ci()->file_m->select('files.*, file_folders.name foldername, file_folders.slug, file_folders.location')
 			->join('file_folders', 'files.folder_id = file_folders.id')
+			->where('files.site_id', SITE_ID)
 			->get_by('files.id', $file_id);
 
 		if ( ! $file)
@@ -683,6 +688,7 @@ class Files
 
 		$results = ci()->file_m->select('files.*, file_folders.name folder_name, file_folders.slug folder_slug')
 			->join('file_folders', 'file_folders.id = files.folder_id')
+			->where('files.site_id', SITE_ID)
 			->get_by($column, $identifier);
 
 		$message = $results ? null : lang('files:no_records_found');
@@ -704,6 +710,7 @@ class Files
 	{
 		$results = ci()->file_m->select('files.*, file_folders.name folder_name, file_folders.slug folder_slug')
 			->join('file_folders', 'file_folders.id = files.folder_id')
+			->where('files.site_id', SITE_ID)
 			->where('location', $location)
 			->where('slug', $container)
 			->get_all();
@@ -899,7 +906,7 @@ class Files
 	public static function rename_file($id = 0, $name)
 	{
 		// physical filenames cannot be changed because of the risk of breaking embedded urls so we just change the db
-		ci()->file_m->update($id, array('name' => $name));
+		ci()->file_m->where('site_id', SITE_ID)->update_by('id', $id, array('name' => $name));
 
 		return self::result(true, lang('files:item_updated'), $name, array('id' => $id, 'name' => $name));
 	}
@@ -917,6 +924,7 @@ class Files
 	{
 		if ($file_to_replace = ci()->file_m->select('files.*, file_folders.name foldername, file_folders.slug, file_folders.location, file_folders.remote_container')
 			->join('file_folders', 'files.folder_id = file_folders.id')
+			->where('files.site_id', SITE_ID)
 			->get_by('files.id', $to_replace))
 		{
 			//remove the old file...
@@ -959,6 +967,7 @@ class Files
 	{
 		if ($file = ci()->file_m->select('files.*, file_folders.name foldername, file_folders.slug, file_folders.location, file_folders.remote_container')
 			->join('file_folders', 'files.folder_id = file_folders.id')
+			->where('files.site_id', SITE_ID)
 			->get_by('files.id', $id))
 		{
 			ci()->load->model('keywords/keyword_m');
@@ -990,7 +999,7 @@ class Files
 		$search = explode(' ', $search);
 
 		// first we search folders
-		ci()->file_folders_m->select('name, parent_id');
+		ci()->file_folders_m->select('name, parent_id')->where('site_id', SITE_ID);
 		
 		foreach ($search as $match) 
 		{
@@ -1006,7 +1015,7 @@ class Files
 
 
 		// search the file records
-		ci()->file_m->select('name, folder_id');
+		ci()->file_m->select('name, folder_id')->where('site_id', SITE_ID);
 
 		foreach ($search as $match) 
 		{

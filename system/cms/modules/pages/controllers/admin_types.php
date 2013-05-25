@@ -95,6 +95,9 @@ class Admin_types extends Admin_Controller
 	{
 		parent::__construct();
 
+		if(! group_has_role('pages', 'create_types'))
+			show_404();
+
 		$this->load->model('page_type_m');
 		$this->lang->load('pages');
 		$this->lang->load('page_types');

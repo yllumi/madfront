@@ -29,6 +29,7 @@ class Files_front extends Public_Controller
 
 		$file = $this->file_m->select('files.*, file_folders.location')
 			->join('file_folders', 'file_folders.id = files.folder_id')
+			->where('files.site_id', SITE_ID)
 			->get_by('files.id', $id) OR show_404();
 
 		// increment the counter
@@ -54,7 +55,7 @@ class Files_front extends Public_Controller
 		// is it a 15 char hash with no file extension or is it an old style numeric id with no file extension?
 		if ((strlen($id) === 15 and strpos($id, '.') === false) or (is_numeric($id) and strpos($id, '.') === false))
 		{
-			$file = $this->file_m->get($id);
+			$file = $this->file_m->where('site_id', SITE_ID)->get_by('id', $id);
 		}
 		
 		// it's neither a legacy numeric id nor a new hash id so they've passed the filename itself
@@ -251,6 +252,7 @@ class Files_front extends Public_Controller
 	{
 		$file = $this->file_m->select('files.*, file_folders.location')
 			->join('file_folders', 'file_folders.id = files.folder_id')
+			->where('files.site_id', SITE_ID)
 			->get_by('files.id', $id);
 
 		// it is a cloud file, we will return the thumbnail made when it was uploaded

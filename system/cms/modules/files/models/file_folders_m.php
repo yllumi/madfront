@@ -75,6 +75,7 @@ class File_folders_m extends MY_Model {
 
 		$folders = $this
 			->order_by('file_folders.name')
+			->where('file_folders.site_id', SITE_ID)
 			->get_many_by(array('parent_id' => $parent_id));
 
 		if ( ! $folders)

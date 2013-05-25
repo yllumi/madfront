@@ -137,6 +137,7 @@ class Comments
 	public function count()
 	{
 		return (int) ci()->db->where(array(
+			'site_id'	=> SITE_ID,
 			'module'	=> $this->module,
 			'entry_key'	=> $this->singular,
 			'entry_id'	=> $this->entry_id,

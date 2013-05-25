@@ -25,6 +25,7 @@ class Comment_m extends MY_Model
     	
 			// If there is a comment user id, make sure the user still exists
 			->where('IF(c.user_id > 0, c.user_id = u.id, 1)')
+    		->where('c.site_id', SITE_ID)
     		->where('c.id', $id)
     		->get()
     		->row();
@@ -86,7 +87,8 @@ class Comment_m extends MY_Model
 	public function insert($input, $skip_validation = false)
 	{	
 		return parent::insert(array(
-			'user_id'		=> isset($input['user_id']) 	? 	$input['user_id'] 									:  0,
+			'user_id'		=> isset($input['user_id']) ? $input['user_id'] : 0,
+			'site_id'		=> SITE_ID,
 			'user_name'		=> isset($input['user_name'])	&& !isset($input['user_id'])	? 	ucwords(strtolower(strip_tags($input['user_name']))) : '',
 			'user_email'	=> isset($input['user_email'])	&& !isset($input['user_id']) 	? 	strtolower($input['user_email']) 					: '',
 			'user_website'	=> isset($input['user_website']) ? 	prep_url(strip_tags($input['user_website'])) 		: '',
@@ -114,7 +116,7 @@ class Comment_m extends MY_Model
 	 */
 	public function update($id, $input, $skip_validation = false)
 	{
-		return parent::update($id, array(
+		return parent::update_by(array('site_id'=>SITE_ID,'id'=>$id), array(
 			'user_name'		=> isset($input['user_name']) 	? 	ucwords(strtolower(strip_tags($input['user_name']))) : '',
 			'user_email'	=> isset($input['user_email']) 	? 	strtolower($input['user_email']) 					 : '',
 			'user_website'	=> isset($input['user_website']) ? 	prep_url(strip_tags($input['user_website'])) 		 : '',
@@ -131,7 +133,7 @@ class Comment_m extends MY_Model
 	 */
 	public function approve($id)
 	{
-		return parent::update($id, array('is_active' => true));
+		return parent::update_by(array('site_id'=>SITE_ID,'id'=>$id), array('is_active' => true));
 	}
 	
 	/**
@@ -142,7 +144,7 @@ class Comment_m extends MY_Model
 	 */
 	public function unapprove($id)
 	{
-		return parent::update($id, array('is_active' => false));
+		return parent::update_by(array('site_id'=>SITE_ID,'id'=>$id), array('is_active' => false));
 	}
 
 	public function get_slugs()
@@ -150,7 +152,8 @@ class Comment_m extends MY_Model
 		$this->db
 			->select('comments.module, modules.name')
 			->distinct()
-			->join('modules', 'comments.module = modules.slug', 'left');
+			->join('modules', 'comments.module = modules.slug', 'left')
+			->where('comments.site_id', SITE_ID);
 
 		$slugs = parent::get_all();
 
@@ -222,6 +225,7 @@ class Comment_m extends MY_Model
   	public function delete_by_entry($module, $entry_key, $entry_id)
 	{
     	return $this->db
+    		->where('site_id', SITE_ID)
     		->where('module', $module)
     		->where('entry_id', $entry_id)
     		->where('entry_key', $entry_key)
@@ -241,6 +245,7 @@ class Comment_m extends MY_Model
     		->select('IF(c.user_id > 0, u.email, c.user_email) as user_email', false)
     		->select('u.username, m.display_name')
     		->join('users u', 'c.user_id = u.id', 'left')
-    		->join('profiles m', 'm.user_id = u.id', 'left');
+    		->join('profiles m', 'm.user_id = u.id', 'left')
+    		->where('c.site_id', SITE_ID);
 	}
 }

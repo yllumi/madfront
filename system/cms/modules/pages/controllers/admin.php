@@ -190,7 +190,9 @@ class Admin extends Admin_Controller {
 		$page_raw = $this->db
 						->select('pages.*, page_types.stream_id as pt_stream_id')
 						->join('page_types', 'page_types.id = pages.type_id')
-						->limit(1)->where('pages.id', $id)->get('pages')->row_array();
+						->limit(1)->where('pages.site_id', SITE_ID)->where('pages.id', $id)->get('pages')->row_array();
+
+		if(empty($page_raw)) show_404();
 
 		$stream = $this->streams_m->get_stream($page_raw['pt_stream_id']);
 
@@ -373,6 +375,7 @@ class Admin extends Admin_Controller {
 		{
 			$page->parent_id = $parent_id;
 			$parent_page = $this->page_m->get($parent_id);
+			if(empty($parent_page)) show_404();
 		}
 
 		// Set some data that both create and edit forms will need

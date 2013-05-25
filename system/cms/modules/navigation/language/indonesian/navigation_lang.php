@@ -27,15 +27,16 @@ $lang['nav:link_list_title']                    = 'Tautan';
 $lang['nav:group_list_title']                   = 'Grup';
 
 // messages
-$lang['nav:group_no_links']                     = 'Tidak ada tautan di grup ini.';
-$lang['nav:no_groups']                          = 'Tidak ada grup navigasi.';
+$lang['nav:group_no_links']                     = 'Tidak ditemukan tautan di grup ini.';
+$lang['nav:no_groups']                          = 'Tidak ditemukan grup navigasi.';
 $lang['nav:group_delete_confirm']               = 'Anda yakin akan menghapus grup navigasi ini? Ini akan menghapus SEMUA tautan di dalam grup, dan file layout harus diperbaharui untuk membuang referensi navigasi.';
 $lang['nav:group_add_success']                  = 'Grup navigasi telah disimpan.';
 $lang['nav:group_add_error']                    = 'Terjadi kesalahan.';
 $lang['nav:group_mass_delete_success']          = 'Grup navigasi telah dihapus.';
 $lang['nav:link_add_success']                   = 'Tautan navigasi telah ditambahkan.';
-$lang['nav:link_add_error']                     = 'Terjadi kesalahan yang tidak terduga.';
-$lang['nav:link_not_exist_error']               = 'Tautan navigasi tidak ada.';
+$lang['nav:link_add_error']                     = 'Terjadi kesalahan saat menambahkan tautan.';
+$lang['nav:link_not_exist_error']               = 'Tautan navigasi tidak ditemukan.';
+$lang['nav:group_not_exist_error']               = 'Grup navigasi tidak ditemukan.';
 $lang['nav:link_edit_success']                  = 'Tautan navigasi telah disimpan.';
 $lang['nav:link_delete_success']                = 'Tautan navigasi telah dihapus.';
 $lang['nav:choose_value']						= 'Kolom %s tidak boleh kosong.';

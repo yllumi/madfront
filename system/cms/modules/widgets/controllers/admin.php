@@ -97,7 +97,7 @@ class Admin extends Admin_Controller {
 	{
 		$data = array();
 
-		$base_where = array('enabled' => 1);
+		$base_where = array('enabled' => 1, 'site_id' => SITE_ID);
 
 		//capture active
 		$base_where['enabled'] = is_int($this->session->flashdata('enabled')) ? $this->session->flashdata('enabled') : $base_where['enabled'];
@@ -185,11 +185,11 @@ class Admin extends Admin_Controller {
 				// Fire an Event. A widget has been enabled or disabled. 
 				switch ($action)
 				{
-					case 'enable':		
+					case 'enable':	
 						Events::trigger('widget_enabled', $ids);
 						break;
 					
-					case 'disable':		
+					case 'disable':	
 						Events::trigger('widget_disabled', $ids);
 						break;
 				}

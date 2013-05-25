@@ -196,9 +196,7 @@ class User_m extends MY_Model
 
 		if ( ! empty($params['name']))
 		{
-			$this->db
-				->or_like('users.username', trim($params['name']))
-				->or_like('users.email', trim($params['name']));
+			$this->db->where("(".$this->db->dbprefix('users.username')." like '%".trim($params['name'])."%' OR ".$this->db->dbprefix('users.email')." like '%".trim($params['name'])."%') ");
 		}
 
 		return $this->get_all();

@@ -29,6 +29,7 @@ class Files_wysiwyg extends WYSIWYG_Controller {
 				->select('files.*, file_folders.location')
 				->join('file_folders', 'file_folders.id = files.folder_id')
 				->order_by('files.date_added', 'DESC')
+				->where('files.site_id', SITE_ID)
 				->get_many_by('files.folder_id', $data->current_folder->id);
 
 			$subfolders = $this->file_folders_m->folder_tree($data->current_folder->id);

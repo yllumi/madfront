@@ -7,6 +7,7 @@
 </section>
 
 <section class="item">
+<div class="content">
 
 <?php echo form_open(uri_string(), 'class="crud"'); ?>
 
@@ -50,4 +51,5 @@
 
 </form>
 
+</div>
 </section>

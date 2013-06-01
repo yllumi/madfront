@@ -33,10 +33,14 @@
 					<div class="input"><?php echo form_input('slug', $post->slug, 'maxlength="100" class="width-20"') ?></div>
 				</li>
 	
+				<?php if((isset($post->author_id) and $post->author_id == $this->current_user->id) and group_has_role('blog','put_live') or group_has_role('blog','put_all_live')): ?>
 				<li>
 					<label for="status"><?php echo lang('blog:status_label') ?></label>
 					<div class="input"><?php echo form_dropdown('status', array('draft' => lang('blog:draft_label'), 'live' => lang('blog:live_label')), $post->status) ?></div>
 				</li>
+				<?php else: ?>
+					<?php echo form_hidden('status', 'draft'); ?>
+				<?php endif; ?>
 		
 				<li class="editor">
 					<label for="body"><?php echo lang('blog:content_label') ?> <span>*</span></label><br>

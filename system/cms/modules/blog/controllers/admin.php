@@ -285,11 +285,17 @@ class Admin extends Admin_Controller
 		$post = $this->blog_m->where('site_id', SITE_ID)->get_by('blog.id', $id);
 
 		if(!$post) show_404();
+
+		if($post->author_id != $this->current_user->id)
+			role_or_die('blog', 'edit_live');
 		
 		// They are trying to put this live
 		if ($post->status != 'live' and $this->input->post('status') == 'live')
 		{
-			role_or_die('blog', 'put_live');
+			if($post->author_id != $this->current_user->id)
+				role_or_die('blog', 'put_all_live');
+			else if(!group_has_role('blog', 'put_all_live'))
+				role_or_die('blog', 'put_live');
 		}
 
 		// If we have keywords before the update, we'll want to remove them from keywords_applied
@@ -459,7 +465,7 @@ class Admin extends Admin_Controller
 	 */
 	public function publish($id = 0)
 	{
-		role_or_die('blog', 'put_live');
+		role_or_die('blog', 'put_all_live');
 
 		// Publish one
 		$ids = ($id) ? array($id) : $this->input->post('action_to');

@@ -65,7 +65,7 @@ class Module_Blog extends Module
 			'menu' => 'content',
 
 			'roles' => array(
-				'put_live', 'edit_live', 'delete_live', 'admin_blog_fields'
+				'put_live', 'put_all_live', 'edit_live', 'delete_live', 'admin_blog_fields', 'manage_blog_categories'
 			),
 
 			'sections' => array(
@@ -79,8 +79,15 @@ class Module_Blog extends Module
 							'class' => 'add',
 						),
 					),
-				),
-				'categories' => array(
+				)
+			),
+		);
+
+		if (function_exists('group_has_role'))
+		{
+			if(group_has_role('blog', 'manage_blog_categories'))
+			{
+				$info['sections']['categories'] = array(
 					'name' => 'cat:list_title',
 					'uri' => 'admin/blog/categories',
 					'shortcuts' => array(
@@ -90,12 +97,9 @@ class Module_Blog extends Module
 							'class' => 'add',
 						),
 					),
-				),
-			),
-		);
-
-		if (function_exists('group_has_role'))
-		{
+				);
+			}
+			
 			if(group_has_role('blog', 'admin_blog_fields'))
 			{
 				$info['sections']['fields'] = array(

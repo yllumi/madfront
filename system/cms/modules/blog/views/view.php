@@ -21,14 +21,14 @@
 		{{ if category }}
 		<div class="category">
 			{{ helper:lang line="blog:category_label" }}
-			<span><a href="{{ url:site }}blog/category/{{ category:slug }}">{{ category:title }}</a></span>
+			<span><a href="{{ url:site }}{{ settings:blog_caption }}/category/{{ category:slug }}">{{ category:title }}</a></span>
 		</div>
 		{{ endif }}
 
 		{{ if keywords }}
 		<div class="keywords">
 			{{ keywords }}
-				<span><a href="{{ url:site }}blog/tagged/{{ keyword }}">{{ keyword }}</a></span>
+				<span><a href="{{ url:site }}{{ settings:blog_caption }}/tagged/{{ keyword }}">{{ keyword }}</a></span>
 			{{ /keywords }}
 		</div>
 		{{ endif }}

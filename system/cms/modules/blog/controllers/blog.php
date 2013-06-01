@@ -103,7 +103,7 @@ class Blog extends Public_Controller
 	 */
 	public function category($slug = '')
 	{
-		$slug or redirect('blog');
+		$slug or redirect($this->settings->blog_caption);
 
 		// Get category data
 		$category = $this->blog_categories_m->get_by('slug', $slug) OR show_404();
@@ -198,7 +198,7 @@ class Blog extends Public_Controller
 		// We need a slug to make this work.
 		if ( ! $slug)
 		{
-			redirect('blog');
+			redirect($this->settings->blog_caption);
 		}
 
 		$params = array(
@@ -212,7 +212,7 @@ class Blog extends Public_Controller
 
 		if ( ! $post or ($post['status'] !== 'live' and ! $this->ion_auth->is_admin()))
 		{
-			redirect('blog');
+			redirect($this->settings->blog_caption);
 		}
 
 		$this->_single_view($post);
@@ -227,7 +227,7 @@ class Blog extends Public_Controller
 	{
 		if ( ! $hash)
 		{
-			redirect('blog');
+			redirect($this->settings->blog_caption);
 		}
 
 		$params = array(
@@ -241,12 +241,12 @@ class Blog extends Public_Controller
 
 		if ( ! $post)
 		{
-			redirect('blog');
+			redirect($this->settings->blog_caption);
 		}
 
 		if ($post['status'] === 'live')
 		{
-			redirect('blog/'.date('Y/m', $post['created_on']).'/'.$post['slug']);
+			redirect($this->settings->blog_caption.'/'.date('Y/m', $post['created_on']).'/'.$post['slug']);
 		}
 
 		// Set index nofollow to attempt to avoid search engine indexing
@@ -266,7 +266,7 @@ class Blog extends Public_Controller
 	public function tagged($tag = '')
 	{
 		// decode encoded cyrillic characters
-		$tag = rawurldecode($tag) or redirect('blog');
+		$tag = rawurldecode($tag) or redirect($this->settings->blog_caption);
 
 		// Here we need to add some custom joins into the
 		// row query. This shouldn't be in the controller, but
@@ -347,7 +347,7 @@ class Blog extends Public_Controller
 		$post['keywords_arr'] = $keywords_arr;
 
 		// Full URL for convenience.
-		$post['url'] = site_url('blog/'.date('Y/m', $post['created_on']).'/'.$post['slug']);
+		$post['url'] = site_url($this->settings->blog_caption.'/'.date('Y/m', $post['created_on']).'/'.$post['slug']);
 	
 		// What is the preview? If there is a field called intro,
 		// we will use that, otherwise we will cut down the blog post itself.
@@ -420,7 +420,7 @@ class Blog extends Public_Controller
 			// since we need an array.
 			if ($category = $this->db->limit(1)->where('id', $post['category_id'])->get('blog_categories')->row_array())
 			{
-				$this->template->set_breadcrumb($category['title'], 'blog/category/'.$category['slug']);
+				$this->template->set_breadcrumb($category['title'], $this->settings->blog_caption.'/category/'.$category['slug']);
 
 				// Set category OG metadata			
 				$this->template->set_metadata('article:section', $category['title'], 'og');

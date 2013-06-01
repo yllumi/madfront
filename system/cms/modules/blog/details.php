@@ -130,6 +130,26 @@ class Module_Blog extends Module
 			$this->db->where('stream_namespace', 'blogs')->delete('data_streams');
 		}
 
+		// Install the setting
+		$setting = array(
+				'slug' => 'Blog Caption',
+				'title' => 'blog_caption',
+				'description' => 'The caption for blog module. You can put it as "blog", "news", "article", or whatever.',
+				'type' => 'text',
+				'default' => 'blog',
+				'value' => 'blog',
+				'options' => '',
+				'is_required' => 0,
+				'is_gui' => 1,
+				'module' => '',
+				'order' => 981,
+		);
+
+		if ( ! $this->db->insert('settings', $setting))
+		{
+			return false;
+		}
+
 		// Create the blog categories table.
 		$this->install_tables(array(
 			'blog_categories' => array(

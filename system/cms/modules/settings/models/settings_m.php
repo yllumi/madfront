@@ -31,6 +31,7 @@ class Settings_m extends MY_Model {
 
 		return $this->db
 			->select('*, IF(`value` = "", `default`, `value`) as `value`', false)
+			->where('site_id', SITE_ID)
 			->where($where)
 			->get($this->_table)
 			->row();
@@ -55,6 +56,7 @@ class Settings_m extends MY_Model {
 
 		$this->db
 			->select('*, IF(`value` = "", `default`, `value`) as `value`', false)
+			->where('site_id', SITE_ID)
 			->where($where)
 			->order_by('`order`', 'DESC');
 		
@@ -73,7 +75,7 @@ class Settings_m extends MY_Model {
 	 */
 	public function update($slug = '', $params = array(), $skip_validation = false)
 	{
-		return $this->db->update($this->_table, $params, array('slug' => $slug));
+		return $this->db->update($this->_table, $params, array('slug' => $slug, 'site_id' => SITE_ID));
 	}
 
 	/**
@@ -88,6 +90,7 @@ class Settings_m extends MY_Model {
 	{
 		$sections = $this->select('module')
 			->distinct()
+			->where('site_id', SITE_ID)
 			->where('module != ""')
 			->get_all();
 

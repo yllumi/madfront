@@ -19,7 +19,8 @@ class Variables_m extends MY_Model
     {
     	return parent::insert(array(
     		'name' => $input['name'],
-    		'data' => $input['data']
+    		'data' => $input['data'],
+    		'site_id' => SITE_ID
         ));
     }
 
@@ -33,7 +34,7 @@ class Variables_m extends MY_Model
 	 */
     public function update($id, $input = array(), $skip_validation = false)
     {
-        return parent::update($id, array(
+        return parent::update_by(array('id' => $id, 'site_id' => SITE_ID), array(
 			'name'	=> $input['name'],
 			'data'	=> $input['data']
 		));
@@ -52,7 +53,8 @@ class Variables_m extends MY_Model
     {
     	return (int) parent::count_by(array(
 			'id !='	=>	$id,
-			'name'	=>	$name
+			'name'	=>	$name,
+			'site_id' => SITE_ID
 		)) > 0;
     }
 }

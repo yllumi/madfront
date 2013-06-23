@@ -62,7 +62,7 @@ class Admin extends Admin_Controller
 	public function index()
 	{
 		// Create pagination links
-		$this->template->pagination = create_pagination('admin/variables/index', $this->variables_m->count_all());
+		$this->template->pagination = create_pagination('admin/variables/index', $this->variables_m->count_by(array('site_id'=>SITE_ID)));
 
 		// Offset
 		$page = $this->uri->segment(4);
@@ -74,6 +74,7 @@ class Admin extends Admin_Controller
 		// Using this data, get the relevant results
 		$this->template->variables = $this->variables_m
 			->order_by('name')
+			->where('site_id', SITE_ID)
 			->limit($this->template->pagination['limit'], $offset)
 			->get_all();
 
@@ -163,7 +164,7 @@ class Admin extends Admin_Controller
 		$id OR redirect('admin/variables');
 
 		// Get the variable
-		$this->template->variable = $this->variables_m->get($id);
+		$this->template->variable = $this->variables_m->get_by(array('id'=>$id, 'site_id'=>SITE_ID));
 		$this->template->variable OR redirect('admin/variables');
 
 		if ($this->form_validation->run())
@@ -245,7 +246,7 @@ class Admin extends Admin_Controller
 		foreach ($ids as $id)
 		{
 			// Get the row to use a value.. as title, name
-			if ($variable = $this->variables_m->get($id))
+			if ($variable = $this->variables_m->get_by(array('id'=>$id, 'site_id'=>SITE_ID)))
 			{
 				// Make deletion retrieving an status and store an value to display in the messages
 				$deleted[($this->variables_m->delete($id) ? 'success' : 'error')][] = $variable->name;

@@ -27,6 +27,8 @@ class Routes_m extends MY_Model {
      */
     public function get_routes($limit = false, $offset = 0)
 	{
+		$this->db->where('site_id', SITE_ID);
+
         $this->db->order_by('name', 'asc');
 
         if ($limit) $this->db->limit($limit, $offset);
@@ -45,7 +47,7 @@ class Routes_m extends MY_Model {
      */
     public function get_route($route_id)
 	{
-		return $this->db->limit(1)->where('id', $route_id)->get('routes')->row();
+		return $this->db->where('site_id', SITE_ID)->limit(1)->where('id', $route_id)->get('routes')->row();
 	}
 
     // --------------------------------------------------------------------------
@@ -63,7 +65,8 @@ class Routes_m extends MY_Model {
     		'route_key'		=> $this->input->post('route_key'),
     		'route_value'	=> $this->input->post('route_value'),
     		'when_added'	=> date('Y-m-d H:i:s'),
-    		'added_by'		=> $this->current_user->id
+    		'added_by'		=> $this->current_user->id,
+			'site_id'		=> SITE_ID
     	);
     	
     	return $this->db->insert('routes', $insert_data);
@@ -80,15 +83,20 @@ class Routes_m extends MY_Model {
      */
     public function update_route($route_id)
     {
-    	$update_data = array(
-    		'name'			=> $this->input->post('name'),
-    		'route_key'		=> $this->input->post('route_key'),
-    		'route_value'	=> $this->input->post('route_value'),
-    		'last_updated'	=> date('Y-m-d H:i:s')
-    	);
+		if($this->get_route($route_id)) {
+	
+			$update_data = array(
+				'name'			=> $this->input->post('name'),
+				'route_key'		=> $this->input->post('route_key'),
+				'route_value'	=> $this->input->post('route_value'),
+				'last_updated'	=> date('Y-m-d H:i:s')
+			);
     	
-    	$this->db->where('id', $route_id);
-    	return $this->db->update('routes', $update_data);
+			$this->db->where('id', $route_id);
+			return $this->db->update('routes', $update_data);
+		}
+		
+		return false;
     }
 
     // --------------------------------------------------------------------------
@@ -102,7 +110,7 @@ class Routes_m extends MY_Model {
      */
     public function delete_route($route_id)
     {
-    	return $this->db->where('id', $route_id)->delete('routes');
+    	return $this->db->where('site_id', SITE_ID)->where('id', $route_id)->delete('routes');
     }
 
     // --------------------------------------------------------------------------
@@ -116,14 +124,17 @@ class Routes_m extends MY_Model {
     public function sync_routes()
     {
     	$this->load->helper('file');
+		$this->load->model('multisite_manager/multisite_manager_m');
+		
+		$site = $this->multisite_manager_m->get(SITE_ID);
     
 		// Check to make sure that we can read/write the
 		// Routes file
-        if (! is_file(APPPATH.'cache/routes/'.$_SERVER['SERVER_NAME'].'.routes.php')){
-            write_file(APPPATH.'cache/routes/'.$_SERVER['SERVER_NAME'].'.routes.php');
+        if (! is_file(APPPATH.'cache/routes/'.$site->ref.'.routes.php')){
+            write_file(APPPATH.'cache/routes/'.$site->ref.'.routes.php', '');
         }
 
-		$route_file = APPPATH.'cache/routes/'.$_SERVER['SERVER_NAME'].'.routes.php';
+		$route_file = APPPATH.'cache/routes/'.$site->ref.'.routes.php';
 				
 		$info = get_file_info($route_file, 'writable');
 		

@@ -1,1 +1,0 @@
-{{ session:messages success="alert alert-success" notice="alert alert-warning" error="alert alert-error" }}

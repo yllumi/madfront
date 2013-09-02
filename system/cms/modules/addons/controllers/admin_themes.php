@@ -28,6 +28,8 @@ class Admin_themes extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
+		role_or_die('addons', 'themes');
 	
 		$this->load->model('theme_m');
 		$this->lang->load('addons');

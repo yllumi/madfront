@@ -189,6 +189,7 @@ class Plugin_Navigation extends Plugin
 		$current_class  = $this->attribute('class', 'current');
 		$first_class    = $this->attribute('first_class', 'first');
 		$last_class     = $this->attribute('last_class', 'last');
+		$parent_class 	= $this->attribute('parent_class', 'parent');
 		$dropdown_class = $this->attribute('dropdown_class', 'dropdown');
 		$output         = $return_arr ? array() : '';
 		$wrap           = $this->attribute('wrap');
@@ -281,12 +282,32 @@ class Plugin_Navigation extends Plugin
 
 				--$level;
 			}
-
+			
 			// is this the link to the page that we're on?
 			if ( preg_match('@^' . current_url() . '/?$@', $link['url']) or ($link['link_type'] == 'page' and $link['is_home']) and site_url() == current_url() )
 			{
 				$current_link       = $link['url'];
 				$wrapper['class'][] = $current_class;
+			}
+
+			// Is this page a parent of the current page?
+			// Get the URI and compare
+			$uri_segments = explode('/', str_replace(site_url(), '', $link['url']));
+
+			foreach ($uri_segments as $k => $seg)
+			{
+				if ( ! $seg)
+				{
+					unset($uri_segments[$k]);
+				}
+			}
+
+			$short_segments 
+				= array_slice($this->uri->segment_array(), 0, count($uri_segments));
+
+			if ( ! array_diff($short_segments, $uri_segments))
+			{
+				$wrapper['class'][] = $parent_class;
 			}
 
 			// is the link we're currently working with found inside the children html?

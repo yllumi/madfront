@@ -19,6 +19,8 @@ class Admin_plugins extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
+		role_or_die('addons', 'plugins');
 	}
 
 	/**

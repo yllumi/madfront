@@ -25,6 +25,8 @@ class Admin_modules extends Admin_Controller
 	{
 		parent::__construct();
 
+		role_or_die('addons', 'modules');
+
 		$this->lang->load('addons');
 	}
 

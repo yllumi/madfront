@@ -65,7 +65,7 @@ class Module_Blog extends Module
 			'menu' => 'content',
 
 			'roles' => array(
-				'put_live', 'edit_live', 'delete_live', 'admin_blog_fields'
+				'put_live', 'put_all_live', 'edit_live', 'delete_live', 'admin_blog_fields', 'manage_blog_categories'
 			),
 
 			'sections' => array(
@@ -79,8 +79,15 @@ class Module_Blog extends Module
 							'class' => 'add',
 						),
 					),
-				),
-				'categories' => array(
+				)
+			),
+		);
+
+		if (function_exists('group_has_role'))
+		{
+			if(group_has_role('blog', 'manage_blog_categories'))
+			{
+				$info['sections']['categories'] = array(
 					'name' => 'cat:list_title',
 					'uri' => 'admin/blog/categories',
 					'shortcuts' => array(
@@ -90,12 +97,9 @@ class Module_Blog extends Module
 							'class' => 'add',
 						),
 					),
-				),
-			),
-		);
-
-		if (function_exists('group_has_role'))
-		{
+				);
+			}
+			
 			if(group_has_role('blog', 'admin_blog_fields'))
 			{
 				$info['sections']['fields'] = array(
@@ -128,6 +132,26 @@ class Module_Blog extends Module
 		if ($this->db->table_exists('data_streams'))
 		{
 			$this->db->where('stream_namespace', 'blogs')->delete('data_streams');
+		}
+
+		// Install the setting
+		$setting = array(
+				'slug' => 'Blog Caption',
+				'title' => 'blog_caption',
+				'description' => 'The caption for blog module. You can put it as "blog", "news", "article", or whatever.',
+				'type' => 'text',
+				'default' => 'blog',
+				'value' => 'blog',
+				'options' => '',
+				'is_required' => 0,
+				'is_gui' => 1,
+				'module' => '',
+				'order' => 981,
+		);
+
+		if ( ! $this->db->insert('settings', $setting))
+		{
+			return false;
 		}
 
 		// Create the blog categories table.

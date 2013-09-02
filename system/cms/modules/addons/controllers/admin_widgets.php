@@ -26,6 +26,8 @@ class Admin_Widgets extends Admin_Controller
 	{
 		parent::__construct();
 
+		role_or_die('addons', 'widgets');
+
 		$this->load->library('widgets');
 		$this->lang->load('addons');
 		$this->lang->load('widgets');

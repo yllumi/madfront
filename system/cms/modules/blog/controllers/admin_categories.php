@@ -39,6 +39,8 @@ class Admin_Categories extends Admin_Controller
 	{
 		parent::__construct();
 
+		role_or_die('blog', 'manage_blog_categories');
+
 		$this->load->model('blog_categories_m');
 		$this->lang->load('categories');
 		$this->lang->load('blog');

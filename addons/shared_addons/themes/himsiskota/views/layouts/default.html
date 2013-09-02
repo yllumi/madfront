@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{{ theme:partial name="metadata" }}
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="80">
+	<div class="top-holder"></div>
+	<div class="container" id="main-container">
+
+	<!-- Masthead
+	================================================== -->
+	<header class="subhead" id="overview">
+		<div class="row">
+			{{ theme:partial name="header" }}
+		</div>
+		<div class="row">
+			<div class="subnav">
+				<ul class="nav nav-pills">
+					{{ navigation:links group="header" class="active" }}
+				</ul>
+			</div>
+		</div>
+
+		<div class="row" id="main-area">
+			<!-- kolom kanan -->
+			{{ template:body }}
+		</div>
+	</header>
+
+     <!-- Footer
+     ================================================== -->
+
+ </div><!-- /container -->
+
+ <footer id="footer">
+  	{{ theme:partial name="footer" }}
+ </footer>
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    {{ theme:js file="jquery.js" }}
+    {{ theme:js file="bootstrap.min.js" }}
+    {{ theme:js file="application.js" }}
+    {{ theme:js file="bootswatch.js" }}
+
+</body>
+</html>

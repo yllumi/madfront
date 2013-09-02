@@ -151,6 +151,14 @@ class CI_Router {
 		$this->routes = ( ! isset($route) OR ! is_array($route)) ? array() : $route;
 		unset($route);
 
+		// Load the sites routes.php file. #madFrontHack
+		if (is_file(APPPATH.'cache/routes/'.$_SERVER['SERVER_NAME'].'.routes.php'))
+		{
+			include(APPPATH.'cache/routes/'.$_SERVER['SERVER_NAME'].'.routes.php');
+			$this->routes += ( ! isset($route) OR ! is_array($route)) ? array() : $route;
+			unset($route);
+		}
+
 		// Set the default controller so we can display it in the event
 		// the URI doesn't correlated to a valid controller.
 		$this->default_controller = empty($this->routes['default_controller']) ? FALSE : strtolower($this->routes['default_controller']);

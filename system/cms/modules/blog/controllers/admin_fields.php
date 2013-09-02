@@ -21,7 +21,7 @@ class Admin_fields extends Admin_Controller {
 
 		// If they cannot administer profile fields,
 		// then they can't access anythere here.
-		role_or_die('users', 'admin_blog_fields');
+		role_or_die('blog', 'admin_blog_fields');
 
 		$this->load->driver('streams');
 		$this->lang->load(array('blog', 'categories'));

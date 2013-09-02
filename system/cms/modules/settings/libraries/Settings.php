@@ -76,7 +76,7 @@ class Settings {
 			return self::$cache[$name];
 		}
 
-		$setting = ci()->settings_m->get_by(array('slug' => $name));
+		$setting = ci()->settings_m->get_by(array('slug' => $name, 'site_id' => SITE_ID));
 
 		// Setting doesn't exist, maybe it's a config option
 		$value = $setting ? $setting->value : config_item($name);
@@ -180,7 +180,7 @@ class Settings {
 	 */
 	public static function delete($name)
 	{
-		return ci()->settings_m->delete_by(array('slug' => $name));
+		return ci()->settings_m->delete_by(array('slug' => $name, 'site_id' => SITE_ID));
 	}
 
 	/**

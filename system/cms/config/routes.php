@@ -57,4 +57,6 @@ $route['edit-profile']	                    = 'users/edit';
 
 $route['sitemap.xml']                       = 'sitemap/xml';
 
+// $route['news(:any)']						= "blog$1";
+
 /* End of file routes.php */

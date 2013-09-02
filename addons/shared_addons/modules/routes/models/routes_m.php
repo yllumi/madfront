@@ -130,11 +130,11 @@ class Routes_m extends MY_Model {
     
 		// Check to make sure that we can read/write the
 		// Routes file
-        if (! is_file(APPPATH.'cache/routes/'.$site->ref.'.routes.php')){
-            write_file(APPPATH.'cache/routes/'.$site->ref.'.routes.php', '');
+        if (! is_file(APPPATH.'cache/routes/'.$site->domain.'.routes.php')){
+            write_file(APPPATH.'cache/routes/'.$site->domain.'.routes.php', '');
         }
 
-		$route_file = APPPATH.'cache/routes/'.$site->ref.'.routes.php';
+		$route_file = APPPATH.'cache/routes/'.$site->domain.'.routes.php';
 				
 		$info = get_file_info($route_file, 'writable');
 		

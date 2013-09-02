@@ -20,6 +20,8 @@ class Admin_field_types extends Admin_Controller
 	{
 		parent::__construct();
 
+		role_or_die('addons', 'field_types');
+
 		$this->load->language('addons');
 	}
 

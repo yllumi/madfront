@@ -336,10 +336,10 @@ class Theme_m extends MY_Model
 			->get('theme_opt_value')
 			->row();
 
-		if($main_value)
-			return $main_value;
+		if($site_value)
+			return $site_value;
 
-		return $site_value;
+		return $main_value;
 	}
 
 	/**
@@ -357,7 +357,7 @@ class Theme_m extends MY_Model
 			->result();
 	}
 
-	/**
+	/** #madFrontHack
 	 * Get site options by
 	 *
 	 * @param array|string $params The where conditions to fetch options by
@@ -436,8 +436,8 @@ class Theme_m extends MY_Model
 		$this->pyrocache->delete_all('theme_m');
 	}
 
-	/**
-	 * Update options value
+	/** #madFrontHack
+	 * Update options value 
 	 *
 	 * @param array $input The values to update
 	 * @param string $slug The slug of the option to update

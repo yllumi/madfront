@@ -69,9 +69,9 @@ class Admin_themes extends Admin_Controller
 	/**
 	 * Save the option settings
 	 *
-	 * @param string $slug The theme slug
+	 * @param string $theme_slug The theme slug
 	 */
-	public function options($slug = '')
+	public function options($theme_slug = '')
 	{
 		$data = new stdClass;
 
@@ -83,15 +83,15 @@ class Admin_themes extends Admin_Controller
 			if ($this->theme_m->get_all())
 			{
 				// Success...
-				$this->session->set_flashdata('success', lang('themes.re-index_success'));
+				$this->session->set_flashdata('success', lang('addons:themes:re-index_success'));
 
 				$this->pyrocache->delete_all('theme_m');
 
-				redirect('admin/addons/themes/options/'.$slug);
+				redirect('admin/addons/themes/options/'.$theme_slug);
 			}
 		}
 
-		$all_options = $this->theme_m->get_options_by(array('theme' => $slug));
+		$all_options = $this->theme_m->get_site_options_by(array('theme' => $theme_slug));
 
 		$options_array = array();
 
@@ -106,7 +106,7 @@ class Admin_themes extends Admin_Controller
 					'rules' => 'trim'.($option->is_required ? '|required' : '').'|max_length[255]'
 				);
 
-				$options_array[$option->slug] = $option->value;
+				$options_array[$option->slug] = array('id'=>$option->id, 'value'=>$option->value);
 			}
 
 			// Set the validation rules
@@ -116,7 +116,7 @@ class Admin_themes extends Admin_Controller
 			if ($this->form_validation->run())
 			{
 				// Loop through again now we know it worked
-				foreach ($options_array as $option_slug => $stored_value)
+				foreach ($options_array as $option_slug => $option_value)
 				{
 					$input_value = $this->input->post($option_slug, false);
 
@@ -126,9 +126,9 @@ class Admin_themes extends Admin_Controller
 					}
 
 					// Dont update if its the same value
-					if ($input_value !== $stored_value)
+					if ($input_value !== $option_value['value'])
 					{
-						$this->theme_m->update_options($option_slug, array('value' => $input_value));
+						$this->theme_m->update_option_value($option_value['id'], array('value' => $input_value));
 					}
 				}
 
@@ -136,16 +136,16 @@ class Admin_themes extends Admin_Controller
 				Events::trigger('theme_options_updated', $options_array);
 
 				// Success...
-				$this->session->set_flashdata('success', lang('themes.save_success'));
+				$this->session->set_flashdata('success', lang('addons:themes:save_success'));
 
 				$this->pyrocache->delete_all('theme_m');
 
-				redirect('admin/addons/themes/options/'.$slug);
+				redirect('admin/addons/themes/options/'.$theme_slug);
 			}
 		}
 
 		$data = new stdClass();
-		$data->slug = $slug;
+		$data->slug = $theme_slug;
 		$data->options_array = $all_options;
 		$data->controller = &$this;
 
@@ -169,12 +169,12 @@ class Admin_themes extends Admin_Controller
 			// Fire an event. A default theme has been set.
 			Events::trigger('theme_set_default', $theme);
 
-			$this->session->set_flashdata('success', sprintf(lang('themes.set_default_success'), $theme));
+			$this->session->set_flashdata('success', sprintf(lang('addons:themes:set_default_success'), $theme));
 		}
 
 		else
 		{
-			$this->session->set_flashdata('error', sprintf(lang('themes.set_default_error'), $theme));
+			$this->session->set_flashdata('error', sprintf(lang('addons:themes:set_default_error'), $theme));
 		}
 
 		if ($this->input->post('method') == 'admin_themes')
@@ -211,7 +211,7 @@ class Admin_themes extends Admin_Controller
 				// Check if we already have a dir with same name
 				if ($this->template->theme_exists($upload_data['raw_name']))
 				{
-					$this->session->set_flashdata('error', lang('themes.already_exists_error'));
+					$this->session->set_flashdata('error', lang('addons:themes:already_exists_error'));
 				}
 
 				else
@@ -224,7 +224,7 @@ class Admin_themes extends Admin_Controller
 
 					// Try and extract
 					$this->unzip->extract($upload_data['full_path'], ADDONPATH.'themes/')
-						? $this->session->set_flashdata('success', lang('themes.upload_success'))
+						? $this->session->set_flashdata('success', lang('addons:themes:upload_success'))
 						: $this->session->set_flashdata('error', $this->unzip->error_string());
 				}
 
@@ -242,7 +242,7 @@ class Admin_themes extends Admin_Controller
 
 		$this->template
 			->set_layout('modal')
-			->title($this->module_details['name'], lang('themes.upload_title'))
+			->title($this->module_details['name'], lang('addons:themes:upload_title'))
 			->build('admin/themes/upload');
 	}
 
@@ -271,7 +271,7 @@ class Admin_themes extends Admin_Controller
 
 				if ($this->settings->default_theme == $theme_name)
 				{
-					$this->session->set_flashdata('error', lang('themes.default_delete_error'));
+					$this->session->set_flashdata('error', lang('addons:themes:default_delete_error'));
 				}
 
 				else
@@ -291,7 +291,7 @@ class Admin_themes extends Admin_Controller
 
 					else
 					{
-						$this->session->set_flashdata('error', sprintf(lang('themes.delete_error'), $theme_dir));
+						$this->session->set_flashdata('error', sprintf(lang('addons:themes:delete_error'), $theme_dir));
 					}
 				}
 			}
@@ -301,13 +301,13 @@ class Admin_themes extends Admin_Controller
 				// Fire an event. One or more themes have been deleted.
 				Events::trigger('theme_deleted', $deleted_names);
 
-				$this->session->set_flashdata('success', sprintf(lang('themes.mass_delete_success'), $deleted, $to_delete));
+				$this->session->set_flashdata('success', sprintf(lang('addons:themes:mass_delete_success'), $deleted, $to_delete));
 			}
 		}
 
 		else
 		{
-			$this->session->set_flashdata('error', lang('themes.delete_select_error'));
+			$this->session->set_flashdata('error', lang('addons:themes:delete_select_error'));
 		}
 
 		redirect('admin/addons/themes');

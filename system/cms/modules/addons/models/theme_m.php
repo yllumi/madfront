@@ -299,9 +299,18 @@ class Theme_m extends MY_Model
 	{
 		$this->pyrocache->delete_all('theme_m');
 
-		return $this->db
+		$ids = $this->db->select('id')->where('theme', $theme)->get('theme_options')->result();
+		$id = array();
+		foreach($ids as $i)
+			$id[] = $i->id;
+
+		$this->db
 			->where('theme', $theme)
 			->delete('theme_options');
+
+		return $this->db
+					->where_in('option_id', $id)
+					->delete('theme_opt_value');
 	}
 
 	/**
@@ -313,12 +322,24 @@ class Theme_m extends MY_Model
 	 */
 	public function get_option($params = array())
 	{
-		return $this->db
-			->select('value')
+		$main_value = $this->db
+			->select('id, value')
 			->where($params)
 			->where('theme', $this->_theme)
 			->get('theme_options')
 			->row();
+
+		$site_value = $this->db
+			->select('option_id, value')
+			->where('site_id', SITE_ID)
+			->where('option_id', $main_value->id)
+			->get('theme_opt_value')
+			->row();
+
+		if($main_value)
+			return $main_value;
+
+		return $site_value;
 	}
 
 	/**
@@ -337,6 +358,37 @@ class Theme_m extends MY_Model
 	}
 
 	/**
+	 * Get site options by
+	 *
+	 * @param array|string $params The where conditions to fetch options by
+	 *
+	 * @return array
+	 */
+	public function get_site_options_by($params = array())
+	{
+		$query = $this->db
+			->where($params)
+			->get('theme_options');
+
+		$options = $query->result();
+
+		foreach ($options as $option)
+		{
+			$site_value = $this->db
+				->select('value')
+				->where('site_id', SITE_ID)
+				->where('option_id', $option->id)
+				->get('theme_opt_value')
+				->row();
+
+			if(isset($site_value->value)) 
+				$option->value = $site_value->value;
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Get values by
 	 *
 	 * @param array|string $params The where conditions to fetch options by
@@ -348,13 +400,20 @@ class Theme_m extends MY_Model
 		$options = new stdClass;
 
 		$query = $this->db
-			->select('slug, value')
+			->select('id, slug, value')
 			->where($params)
 			->get('theme_options');
 
 		foreach ($query->result() as $option)
 		{
-			$options->{$option->slug} = $option->value;
+			$site_value = $this->db
+				->select('value')
+				->where('site_id', SITE_ID)
+				->where('option_id', $option->id)
+				->get('theme_opt_value')
+				->row();
+
+			$options->{$option->slug} = isset($site_value->value)? $site_value->value : $option->value;
 		}
 
 		return $options;
@@ -373,6 +432,37 @@ class Theme_m extends MY_Model
 		$this->db
 			->where('slug', $slug)
 			->update('theme_options', $input);
+
+		$this->pyrocache->delete_all('theme_m');
+	}
+
+	/**
+	 * Update options value
+	 *
+	 * @param array $input The values to update
+	 * @param string $slug The slug of the option to update
+	 *
+	 * @return boolean
+	 */
+	public function update_option_value($id, $input)
+	{
+		$available = $this->db
+				->select('id')
+				->where('option_id', $id)
+				->where('site_id', SITE_ID)
+				->get('theme_opt_value')->row();
+
+		if($available)
+		{
+			$this->db
+				->where('option_id', $id)
+				->where('site_id', SITE_ID)
+				->update('theme_opt_value', $input);
+		} else {
+			$input['option_id'] = $id;
+			$input['site_id'] = SITE_ID;
+			$this->db->insert('theme_opt_value', $input);
+		}
 
 		$this->pyrocache->delete_all('theme_m');
 	}

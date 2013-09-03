@@ -150,7 +150,7 @@ class Admin_themes extends Admin_Controller
 		// set section for tab
 		$theme_sections = array();
 		foreach ($all_options as $option) {
-			$theme_sections[$option->group][] = $option;
+			$theme_sections[(is_null($option->group)?'general':$option->group)][] = $option;
 		}
 		$data->options_array = $theme_sections;
 		$data->controller = &$this;

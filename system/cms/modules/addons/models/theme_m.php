@@ -208,6 +208,7 @@ class Theme_m extends MY_Model
 				'options' => $values['options'],
 				'is_required' => $values['is_required'],
 				'theme' => $theme,
+				'group' => $values['group']
 			);
 
 			$this->db->insert('theme_options', $insert);

@@ -74,7 +74,9 @@ class Admin extends Admin_Controller {
 			// should we show the "no data" message to them?
 			->set('folders', $this->file_folders_m->count_by('parent_id', 0))
 			->set('locations', array_combine(Files::$providers, Files::$providers))
-			->set('folder_tree', Files::folder_tree());
+			->set('folder_tree', Files::folder_tree())
+			// check filesize for this site
+			->set('filesize', $this->file_m->get_total_filesize());
 
 		$path_check = Files::check_dir(Files::$path);
 

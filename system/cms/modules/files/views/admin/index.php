@@ -27,6 +27,19 @@
 <section class="item">
 	<section class="side">
 		<ul id="folders-sidebar">
+			<li class="storage-space">
+				<span class="storage">
+					<span class="used" style="width:<?php echo ($filesize/STORAGE_SPACE * 130); ?>px"></span>
+				</span> 
+				<br><?php echo number_format($filesize,0,',','.').' of '.number_format(STORAGE_SPACE,0,',','.'); ?> kB used
+				<br><?php echo number_format(STORAGE_SPACE-$filesize,0,',','.'); ?> kB available
+
+				<style>
+				.storage-space {padding: 5px 15px 10px; color: #999;border-bottom: 1px solid #ddd; margin-bottom: 10px;}
+				.storage {width:130px;height:3px;background:white;border:1px solid #ADADAD;display: inline-block;vertical-align: middle;}
+				.used {height:3px;background: #008B91;display: block; position: relative;z-index: 100;}
+				</style>
+			</li>
 			<li class="folder places" data-id="0"><a href="#"><?php echo lang('files:places') ?></a></li>
 			<?php if ( ! $folders) : ?>
 				<li class="no_data"><?php echo lang('files:no_folders_places') ?></li>

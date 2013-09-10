@@ -89,7 +89,7 @@ class MX_Router extends CI_Router
 
 			// I add site.id for SITE_ID constant #madFrontHack
 			$site = DB()
-				->select('site.id, site.name, site.ref, site.domain, site.active, alias.domain as alias_domain, alias.type as alias_type')
+				->select('site.id, site.name, site.ref, site.domain, site.active, site.storage_space, alias.domain as alias_domain, alias.type as alias_type')
 				->where('site.domain', SITE_DOMAIN)
 				->or_where('alias.domain', SITE_DOMAIN)
 				->join('core_domains alias', 'alias.site_id = site.id', 'left')
@@ -129,6 +129,9 @@ class MX_Router extends CI_Router
 				
 				// site ID, important for get content based on site ID #madFrontHack
 				define('SITE_ID', $site->id);
+
+				// storage_space for allowable storage file space #madFrontHack
+				define('STORAGE_SPACE', $site->storage_space);				
 				
 				// Path to uploaded files for this site
 				define('UPLOAD_PATH', 'uploads/'.SITE_REF.'/');

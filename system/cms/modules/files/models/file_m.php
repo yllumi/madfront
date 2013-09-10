@@ -52,6 +52,20 @@ class File_m extends MY_Model {
 
 		return $this->get_all();
 	}
+
+	// count all site filesize #madFrontHack
+	public function get_total_filesize()
+	{
+		$this->db->select('filesize')->where('site_id', SITE_ID);
+		$sizes = $this->get_all();
+
+		$total = 0;
+		foreach ($sizes as $value) {
+			$total += $value->filesize;
+		}
+
+		return $total;
+	}
 }
 
 /* End of file file_m.php */

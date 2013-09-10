@@ -178,7 +178,7 @@ class Plugin_Blog extends Plugin
 		$overrides = array(
 			'stream'		=> 'blog',
 			'namespace'		=> 'blogs',
-			'where'			=> array("`status` = 'live'"),
+			'where'			=> array("`status` = 'live' AND `site_id` = ".SITE_ID),
 			'order_by'		=> 'created_on',
 			'sort'			=> 'desc',
 			'show_past'		=> 'no',
@@ -313,6 +313,7 @@ class Plugin_Blog extends Plugin
 
 		$categories = $this->db
 			->select('title, slug')
+			->where('site_id', SITE_ID)
 			->order_by($order_by, $order_dir)
 			->limit($limit)
 			->get('blog_categories')
@@ -344,6 +345,8 @@ class Plugin_Blog extends Plugin
 		// make sure they provided a where clause
 		if (count($wheres) == 0) return false;
 
+		$this->db->where('site_id', SITE_ID);
+
 		foreach ($wheres as $column => $value)
 		{
 			$this->db->where($column, $value);
@@ -371,7 +374,7 @@ class Plugin_Blog extends Plugin
 		
 		$this->load->library(array('keywords/keywords'));
 
-		$posts = $this->db->select('keywords')->get('blog')->result();
+		$posts = $this->db->select('keywords')->where('site_id', SITE_ID)->get('blog')->result();
 
 		$buffer = array(); // stores already added keywords
 		$tags   = array();
